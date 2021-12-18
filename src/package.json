@@ -1,0 +1,15 @@
+{
+  "name": "The Chameleon Bot",
+  "version": "2.0",
+  "description": "A musical bot",
+  "main": "typescript/chameleon.ts",
+  "scripts": {
+    "start": "node typescript/chameleon.ts",
+    "debug": "nodemon typescript/chameleon.ts"
+  },
+  "author": "Falcoch",
+  "license": "ISC",
+  "dependencies": {
+    "discord-music-player": "^8.3.1"
+  }
+}
