@@ -10,4 +10,5 @@ export enum WSDiscordEvent {
     MESSAGE_CREATE = "messageCreate",
     MESSAGE_DELETE = "messagedelete",
     MESSAGE_UPDATE = "messageupdate",
+    ERROR = "error"
 }
