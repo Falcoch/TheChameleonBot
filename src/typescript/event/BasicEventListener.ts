@@ -15,10 +15,7 @@ export abstract class BasicEventListerner  {
 
     public constructor(client : Client) {
         EnvData.configEnv();
-        this._discordBot = client; /*new Client({intents: [Intents.FLAGS.GUILDS, 
-                                                    Intents.FLAGS.GUILD_MESSAGES, 
-                                                    Intents.FLAGS.GUILD_VOICE_STATES
-                                                    ]});*/
+        this._discordBot = client; 
         this._commandeIdentifier = EnvData.getIdentifierToken();
         this._initEvent();
     }
@@ -32,7 +29,7 @@ export abstract class BasicEventListerner  {
             this._quit();
         });
 
-        this._discordBot.on(WSDiscordEvent.MESSAGE_CREATE, (message : Message) => {
+        this._discordBot.on(WSDiscordEvent.MESSAGE_CREATE, async (message : Message) => {
             if(!message.author.bot && message.content[0] == this._commandeIdentifier && message.content.length > 1)
             {
                 message.content = message.content.split(this._commandeIdentifier)[1];

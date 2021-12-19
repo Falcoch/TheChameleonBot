@@ -1,6 +1,7 @@
 import { TheChameleonBotEventListener } from "./ChameleonEventListener";
 import { Client, Intents} from "discord.js";
 import { Player } from "discord-music-player";
+import { TheChameleonBotCommandeManager } from "./ChameleonCommandeManager";
 
 
 export class TheChameleonBot {
@@ -18,7 +19,8 @@ export class TheChameleonBot {
         client.player = player;
 
         this._discordBot = client;
-        this._privateBotToken = privateBotToken;
+        this._privateBotToken = privateBotToken
+        TheChameleonBotCommandeManager.registerCommande();
         this._eventListener = new TheChameleonBotEventListener(this._discordBot);
     }
 
