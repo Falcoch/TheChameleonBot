@@ -4,10 +4,10 @@
  * call a eventManager 
  */
 
-import {Client, Intents} from "discord.js"
+import {Client, Intents,Message} from "discord.js"
 import {WSDiscordEvent} from "../discord/WSDiscordEvent" 
 
-export class EventListerner  {
+export /*abstract*/ class EventListerner  {
 
     private _privateToken : string = "";
     private _discordBot : Client;
@@ -30,22 +30,25 @@ export class EventListerner  {
             this._quit();
         });
 
-        this._discordBot.on(WSDiscordEvent.MESSAGE_CREATE, (message : string) => {
-            if(message.startsWith('%',0))
+        this._discordBot.on(WSDiscordEvent.MESSAGE_CREATE, (message : Message) => {
+            if(!message.author.bot && message.content[0] == '%' && message.content.length > 1)
+            {
+                message.content = message.content.split('%')[1];
                 this._onCommande(message);
+            }
         });
     }
 
     private _ready() : void {
-        
+
     }
     
     private _quit() : void {
+        
+    }   
 
-    }
-
-    private _onCommande(commande : string) : void {
-
+    private _onCommande(commande : Message) : void {
+        commande.channel.send(commande.content);
     }
 
     public start() : void {

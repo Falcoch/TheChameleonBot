@@ -1,4 +1,4 @@
-enum WSDiscordMusicEvent {
+export enum WSDiscordMusicEvent {
     CHANNEL_EMPTY = "channelEmpty",
     SONG_ADD = "songAdd",
     PLAYLIST_ADD = "playlistAdd",
