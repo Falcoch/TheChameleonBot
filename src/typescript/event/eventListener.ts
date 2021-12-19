@@ -45,6 +45,10 @@ export abstract class EventListerner  {
         this._discordBot.on(WSDiscordEvent.ERROR, (error) => {
             this._error(error);
         });
+
+        this._discordBot.on(WSDiscordEvent.WARN, (message) => {
+            this._warn(message);
+        });
     }
 
     private _ready() : void {
@@ -61,6 +65,10 @@ export abstract class EventListerner  {
 
     private _onCommande(commande : Message) : void {
         
+    }
+
+    private _warn(message : string) {
+
     }
 }
 
