@@ -6,13 +6,14 @@
 
 import {Client, Intents,Message} from "discord.js"
 import {WSDiscordEvent} from "../discord/WSDiscordEvent" 
-import {EnvData} from "../Data/EnvData"
+import {EnvData} from "../data/EnvData"
 
-export abstract class EventListerner  {
+export abstract class BasicEventListerner  {
 
     private _privateToken : string;
-    private _discordBot : Client;
     private _commandeIdentifier : string
+
+    protected _discordBot : Client;
 
     public constructor(privateBotToken : string) {
         EnvData.configEnv();
@@ -25,7 +26,7 @@ export abstract class EventListerner  {
         this._initEvent();
     }
 
-    private _initEvent() : void {
+    protected _initEvent() : void {
         this._discordBot.on(WSDiscordEvent.READY, () => {
             this._ready();
         });
@@ -51,24 +52,14 @@ export abstract class EventListerner  {
         });
     }
 
-    private _ready() : void {
+    protected abstract _ready() : void;
+    protected abstract _quit() : void;
+    protected abstract _error(error : Error) : void; 
+    protected abstract _onCommande(commande : Message) : void;
+    protected abstract _warn(message : string); 
 
-    }
-    
-    private _quit() : void {
-        
-    } 
-    
-    private _error(error : Error) : void {
-
-    }
-
-    private _onCommande(commande : Message) : void {
-        
-    }
-
-    private _warn(message : string) {
-
+    public listen() {
+        this._discordBot.login(this._privateToken);
     }
 }
 
