@@ -1,7 +1,7 @@
 export enum WSDiscordEvent {
     READY = "ready",
-    QUIT = "resumed",
-    RECONNECT = "reconnect",
+    QUIT = "resume",
+    RECONNECT = "reconnecting",
     MESSAGE_REACTION_ADD = "messagereactionadd",
     MESSAGE_REACTION_REMOVE = "messageractionremove",
     CHANNEL_CREATE = "channelcreate",
@@ -10,5 +10,6 @@ export enum WSDiscordEvent {
     MESSAGE_CREATE = "messageCreate",
     MESSAGE_DELETE = "messagedelete",
     MESSAGE_UPDATE = "messageupdate",
-    ERROR = "error"
+    ERROR = "error",
+    WARN = "warn"
 }

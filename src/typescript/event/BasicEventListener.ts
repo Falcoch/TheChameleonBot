@@ -10,18 +10,15 @@ import {EnvData} from "../data/EnvData"
 
 export abstract class BasicEventListerner  {
 
-    private _privateToken : string;
     private _commandeIdentifier : string
-
     protected _discordBot : Client;
 
-    public constructor(privateBotToken : string) {
+    public constructor(client : Client) {
         EnvData.configEnv();
-        this._privateToken = privateBotToken;
-        this._discordBot = new Client({intents: [Intents.FLAGS.GUILDS, 
+        this._discordBot = client; /*new Client({intents: [Intents.FLAGS.GUILDS, 
                                                     Intents.FLAGS.GUILD_MESSAGES, 
                                                     Intents.FLAGS.GUILD_VOICE_STATES
-                                                    ]});
+                                                    ]});*/
         this._commandeIdentifier = EnvData.getIdentifierToken();
         this._initEvent();
     }
@@ -39,6 +36,7 @@ export abstract class BasicEventListerner  {
             if(!message.author.bot && message.content[0] == this._commandeIdentifier && message.content.length > 1)
             {
                 message.content = message.content.split(this._commandeIdentifier)[1];
+                message.content = message.content.toLowerCase();
                 this._onCommande(message);
             }
         });
@@ -57,9 +55,5 @@ export abstract class BasicEventListerner  {
     protected abstract _error(error : Error) : void; 
     protected abstract _onCommande(commande : Message) : void;
     protected abstract _warn(message : string); 
-
-    public listen() {
-        this._discordBot.login(this._privateToken);
-    }
 }
 
