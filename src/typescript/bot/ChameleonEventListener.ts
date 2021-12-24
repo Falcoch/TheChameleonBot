@@ -11,18 +11,18 @@ export class TheChameleonBotEventListener extends MusicEventListener {
 
     protected _initEvent(): void {
         super._initEvent();
-        this.on(WSBotErrorEvent.COMMANDE_EXECUTE_ERROR, () => {
+        this.on(WSBotErrorEvent.EXECUTE_ERROR, () => {
             // Error Message !
         });
     }
 
     protected _ready(): void {
-        
+        console.log("Ready !");
     }
 
     protected _commande(commande: Message): void {
         if(!TheChameleonBotCommandeManager.callCommande(this,commande))
-            this.emit(WSBotErrorEvent.COMMANDE_EXECUTE_ERROR); 
+            this.emit(WSBotErrorEvent.EXECUTE_ERROR); 
     }
 
     protected _quit(): void {
