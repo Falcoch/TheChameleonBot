@@ -2,6 +2,7 @@ import { MusicEventListener } from "../event/MusicEventListerner";
 import { Message } from "discord.js";
 import { TheChameleonBotCommandeManager } from "./ChameleonCommandeManager";
 import { WSBotErrorEvent } from "./WSBotErrorEvent";
+import { MessageUtil } from "../util/MessageUtil";
 
 export class TheChameleonBotEventListener extends MusicEventListener {
 
@@ -12,7 +13,23 @@ export class TheChameleonBotEventListener extends MusicEventListener {
     protected _initEvent(): void {
         super._initEvent();
         this.on(WSBotErrorEvent.EXECUTE_ERROR, () => {
-            // Error Message !
+            MessageUtil.errorMessage("Error when executing the commande !");
+        });
+
+        this.on(WSBotErrorEvent.BAD_ARGS_NUMBER, () => {
+            MessageUtil.errorMessage("Bad number of argument !");
+        });
+
+        this.on(WSBotErrorEvent.CANNOT_LOAD_SONG, () => {
+            MessageUtil.errorMessage("Cannot load this song !");
+        });
+
+        this.on(WSBotErrorEvent.NOT_ENOUGHT_PERMISSION, () => {
+            MessageUtil.errorMessage("Not enought permission for that !");
+        });
+
+        this.on(WSBotErrorEvent.UNKNOW_ERROR, () => {
+            MessageUtil.errorMessage("Not enought Argument ...")
         });
     }
 
