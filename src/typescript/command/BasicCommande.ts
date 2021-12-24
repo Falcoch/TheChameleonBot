@@ -27,6 +27,14 @@ export abstract class BasicCommande
         return this._secret;
     }
 
+    public isAdminOnly() : boolean {
+        return this._admin;
+    }
+
+    public setAdminOnly(newState : boolean ) {
+        this._admin = newState;
+    }
+
     public abstract execute(client : Client ,commande : Message) : void;
     public abstract help(channel : TextBasedChannels) : void;
 }

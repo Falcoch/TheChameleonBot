@@ -6,17 +6,16 @@
 
 import {Client, Intents,Message} from "discord.js"
 import {WSDiscordEvent} from "../discord/WSDiscordEvent" 
-import {EnvData} from "../data/EnvData"
 
 export abstract class BasicEventListerner  {
 
     private _commandeIdentifier : string
-    protected _discordBot : Client;
+    private _discordBot : Client;
 
-    public constructor(client : Client) {
-        EnvData.configEnv();
+    public constructor(client : Client,commandeIdentifier : string) {
+       
         this._discordBot = client; 
-        this._commandeIdentifier = EnvData.getIdentifierToken();
+        this._commandeIdentifier = commandeIdentifier;
         this._initEvent();
     }
 
@@ -45,6 +44,18 @@ export abstract class BasicEventListerner  {
         this._discordBot.on(WSDiscordEvent.WARN, (message) => {
             this._warn(message);
         });
+    }
+
+    public getCommandeIdentifier() : string  {
+        return this._commandeIdentifier;
+    }
+
+    public setCommandeIdentifier(newIdentifier : string) : void {
+        this._commandeIdentifier = newIdentifier;
+    }
+
+    public getBot() : Client {
+        return this._discordBot;
     }
 
     protected abstract _ready() : void;
