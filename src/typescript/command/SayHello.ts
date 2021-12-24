@@ -1,10 +1,19 @@
 import { Client, Message, TextBasedChannels } from "discord.js";
 import { BasicCommande } from "./BasicCommande";
 
-export class SayHello extends BasicCommande {
+export class SayHello implements BasicCommande {
     
+    commandeName: string[];
+
+    activated: boolean;
+    adminOnly: boolean;
+    secret: boolean;
+
     public constructor() {
-        super(["sayhello"],true,false,false);
+        this.commandeName ["sayhello"];
+        this.activated =  true;
+        this.adminOnly =  false;
+        this.secret = false;
     }
 
     public execute(client: Client<boolean>, commande: Message): void {

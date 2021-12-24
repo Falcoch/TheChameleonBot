@@ -1,4 +1,4 @@
-import { CommandeManager } from "../command/CommandeRegister";
+import { CommandeManager } from "../command/register/CommandeRegister";
 import { SayHello } from "../command/SayHello";
 
 export class TheChameleonBotCommandeManager extends CommandeManager {

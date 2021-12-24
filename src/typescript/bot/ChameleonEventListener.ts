@@ -1,21 +1,28 @@
 import { MusicEventListener } from "../event/MusicEventListerner";
-import { CommandeManager } from "../command/CommandeRegister";
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { TheChameleonBotCommandeManager } from "./ChameleonCommandeManager";
+import { WSBotErrorEvent } from "./WSBotErrorEvent";
 
 export class TheChameleonBotEventListener extends MusicEventListener {
 
-    public constructor(discordBot : Client,commandeIdentifier : string = '%') {
-        super(discordBot,commandeIdentifier);
+    public constructor(commandeIdentifier : string = '%') {
+        super(commandeIdentifier); 
+    }
+
+    protected _initEvent(): void {
+        super._initEvent();
+        this.on(WSBotErrorEvent.COMMANDE_EXECUTE_ERROR, () => {
+            // Error Message !
+        });
     }
 
     protected _ready(): void {
         
     }
 
-    protected _onCommande(commande: Message): void {
-        if(!TheChameleonBotCommandeManager.callCommande(this.getBot(),commande))
-            this.getBot().emit(""); // Todo : define TCB error !
+    protected _commande(commande: Message): void {
+        if(!TheChameleonBotCommandeManager.callCommande(this,commande))
+            this.emit(WSBotErrorEvent.COMMANDE_EXECUTE_ERROR); 
     }
 
     protected _quit(): void {

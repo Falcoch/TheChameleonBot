@@ -1,5 +1,5 @@
 import { Client, Message, SystemChannelFlags } from "discord.js";
-import { BasicCommande } from "./BasicCommande";
+import { BasicCommande } from "../BasicCommande";
 
 export abstract class CommandeManager {
 
@@ -17,12 +17,12 @@ export abstract class CommandeManager {
 
     public static callCommande(client : Client,commande : Message) : boolean {
         for(let i = 0; i < this._registry.length; i++ ) {
-            if(this._registry[i].isActivated()) {
-                for(let j = 0; j < this._registry[i].getCommandeAlias().length; j++) {
+            if(this._registry[i].activated) {
+                for(let j = 0; j < this._registry[i].commandeName.length; j++) {
                    
-                    if(this._registry[i].getCommandeAlias()[j] == commande.content)
+                    if(this._registry[i].commandeName[j] == commande.content)
                     {   
-                        if(!this._registry[i].isAdminOnly() || (this._registry[i].isAdminOnly() && commande.member.permissions.has("ADMINISTRATOR")))
+                        if(!this._registry[i].adminOnly || (this._registry[i].adminOnly && commande.member.permissions.has("ADMINISTRATOR")))
                         {
                             this._registry[i].execute(client,commande);
                             return true
