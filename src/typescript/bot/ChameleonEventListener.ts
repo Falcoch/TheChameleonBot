@@ -5,8 +5,8 @@ import { TheChameleonBotCommandeManager } from "./ChameleonCommandeManager";
 
 export class TheChameleonBotEventListener extends MusicEventListener {
 
-    public constructor(discordBot : Client) {
-        super(discordBot);
+    public constructor(discordBot : Client,commandeIdentifier : string = '%') {
+        super(discordBot,commandeIdentifier);
     }
 
     protected _ready(): void {
@@ -14,7 +14,8 @@ export class TheChameleonBotEventListener extends MusicEventListener {
     }
 
     protected _onCommande(commande: Message): void {
-        TheChameleonBotCommandeManager.callCommande(this._discordBot,commande)
+        if(!TheChameleonBotCommandeManager.callCommande(this.getBot(),commande))
+            this.getBot().emit(""); // Todo : define TCB error !
     }
 
     protected _quit(): void {

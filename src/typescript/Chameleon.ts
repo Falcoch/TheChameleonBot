@@ -1,6 +1,6 @@
 import { TheChameleonBot } from "./bot/TheChameleonBot";
-import { EnvData } from "./data/EnvData";
+import DotEnv from 'dotenv'
 
-EnvData.configEnv();
-var Chameleon : TheChameleonBot = new TheChameleonBot(EnvData.getPrivateToken());
+DotEnv.config()
+var Chameleon : TheChameleonBot = new TheChameleonBot(process.env.BOT_PRIVATE_TOKEN,'%');
 Chameleon.listen();
