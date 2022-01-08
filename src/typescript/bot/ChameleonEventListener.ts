@@ -2,13 +2,12 @@ import { MusicEventListener } from "../event/MusicEventListerner";
 import { Message } from "discord.js";
 import { TheChameleonBotCommandeManager } from "./ChameleonCommandeManager";
 import { WSBotErrorEvent } from "./WSBotErrorEvent";
-import { EmbedUtil } from "../util/EmbedUtil";
 import { ConsoleUtils } from "../util/ConsoleUtils";
 
 export class TheChameleonBotEventListener extends MusicEventListener {
 
-    public constructor(commandeIdentifier : string = '%') {
-        super(commandeIdentifier); 
+    public constructor(commandeManager,commandeIdentifier : string = '%') {
+        super(commandeManager,commandeIdentifier); 
     }
 
     protected _initEvent(): void {
@@ -43,8 +42,8 @@ export class TheChameleonBotEventListener extends MusicEventListener {
     }
 
     protected _commande(commande: Message): void {
-        if(!TheChameleonBotCommandeManager.callCommande(this,commande))
-            this.emit(WSBotErrorEvent.COMMANDE_EXECUTE); 
+        if(!this._commandeManager.callCommande(this,commande))
+            this.emit(WSBotErrorEvent.UNKNOWN_COMMANDE,commande.content.split(' ')[0]); 
     }
 
     protected _quit(): void {

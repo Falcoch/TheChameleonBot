@@ -1,5 +1,4 @@
 import { TheChameleonBotEventListener } from "./ChameleonEventListener";
-import { Client, Intents} from "discord.js";
 
 import { TheChameleonBotCommandeManager } from "./ChameleonCommandeManager";
 
@@ -7,12 +6,13 @@ import { TheChameleonBotCommandeManager } from "./ChameleonCommandeManager";
 export class TheChameleonBot {
     
     private _eventListener : TheChameleonBotEventListener;
+    private _commandeManager : TheChameleonBotCommandeManager;
     private _privateBotToken : string;
 
     public constructor(privateBotToken : string,commandeIdentifier : string = '%') {
         this._privateBotToken = privateBotToken;
-        TheChameleonBotCommandeManager.registerCommande();
-        this._eventListener = new TheChameleonBotEventListener(commandeIdentifier);
+        this._commandeManager = new TheChameleonBotCommandeManager();
+        this._eventListener = new TheChameleonBotEventListener(this._commandeManager,commandeIdentifier);
     }
 
     public listen() {

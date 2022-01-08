@@ -1,11 +1,10 @@
 import { BasicEventListerner } from "./BasicEventListener";
 import { WSDiscordMusicEvent } from "../discord/WSDiscordMusicEvent";
-import { Client } from "discord.js";
 
 export abstract class MusicEventListener extends BasicEventListerner {
 
-    public constructor(commandeIdentifier : string) {
-        super(commandeIdentifier);
+    public constructor(commandeManager,commandeIdentifier : string = '%') {
+        super(commandeManager,commandeIdentifier);
     }
 
     protected _initEvent() : void {

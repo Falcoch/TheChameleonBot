@@ -1,17 +1,18 @@
-import { Client,Message,TextBasedChannels,VoiceChannel,StageChannel } from "discord.js";
+import { Client,Message,MessageEmbed,VoiceChannel,StageChannel } from "discord.js";
 import { DefaultPlayOptions, Playlist, Queue, Song } from "discord-music-player";
 import { WSBotErrorEvent } from "../bot/WSBotErrorEvent";
 import { CommandeUtils } from "../util/CommandeUtil";
 import { BasicCommande } from "./BasicCommande";
 import ytdl from "ytdl-core";
 import ytpl from "ytpl";
+import { EmbedUtil } from "../util/EmbedUtil";
 
 export class Play implements BasicCommande {
     
-    commandeName: string[];
-    activated: boolean;
-    adminOnly: boolean;
-    secret: boolean;
+    commandeName : string[];
+    activated : boolean;
+    adminOnly : boolean;
+    secret : boolean;
 
     public constructor(active : boolean, admOnly : boolean) {
         this.activated = active
@@ -43,7 +44,6 @@ export class Play implements BasicCommande {
             try {
                 if(ytdl.validateURL(args[1])) {
                     song = await queue.play(args[1]);
-                      
                 }
                 else if(ytpl.validateID(await ytpl.getPlaylistID(args[1])) || false) {
                     song = await queue.playlist(args[1]); 
@@ -70,7 +70,19 @@ export class Play implements BasicCommande {
         }
     }
 
-    public help(channel: TextBasedChannels) : void {
-        
+    public help() : MessageEmbed {
+        let args = 
+        [
+            "Song Link / Playlist Link / Sentence "
+        ];
+
+        let argsDesc = 
+        [
+            "What the bot gonna play."
+        ];
+
+        let desc = "This commande allow you to play music.";
+
+        return EmbedUtil.helpMessage("Play",args,argsDesc,desc);
     }
 }

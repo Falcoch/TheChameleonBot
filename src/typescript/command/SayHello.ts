@@ -1,4 +1,4 @@
-import { Client, Message, TextBasedChannels } from "discord.js";
+import { Client, Message, MessageEmbed } from "discord.js";
 import { BasicCommande } from "./BasicCommande";
 
 export class SayHello implements BasicCommande {
@@ -16,12 +16,12 @@ export class SayHello implements BasicCommande {
         this.secret = false;
     }
 
-    public execute(client: Client<boolean>, commande: Message): boolean {
+    public execute(client: Client<boolean>, commande: Message) : Promise<void> {
         commande.channel.send("Hello !");
-        return true;
+        return null;
     }
 
-    public help(channel: TextBasedChannels): void {
-        
+    public help() : MessageEmbed {
+        return null;
     }
 }

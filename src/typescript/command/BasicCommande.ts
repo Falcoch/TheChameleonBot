@@ -1,4 +1,4 @@
-import { Client, Message, TextBasedChannels } from "discord.js";
+import { Client, Message, MessageEmbed } from "discord.js";
 
 export interface BasicCommande {
     
@@ -8,7 +8,7 @@ export interface BasicCommande {
     adminOnly : boolean;
     secret : boolean;
 
-    execute(client : Client ,commande : Message) : void;
-    help(channel : TextBasedChannels) : void;
+    execute(client : Client ,commande : Message) : Promise<void>;
+    help() : MessageEmbed;
 }
 

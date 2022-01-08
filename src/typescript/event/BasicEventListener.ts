@@ -7,17 +7,20 @@
 import {Client, Intents,Message} from "discord.js"
 import {WSDiscordEvent} from "../discord/WSDiscordEvent"
 import { Player } from "discord-music-player"; 
+import { CommandeRegister } from "../command/register/CommandeRegister";
 
 export abstract class BasicEventListerner extends Client  {
 
-    private _commandeIdentifier : string
+    protected _commandeIdentifier : string
+    protected _commandeManager : CommandeRegister;
 
-    public constructor(commandeIdentifier : string = '%') {
+    public constructor(commandeManager,commandeIdentifier : string = '%') {
         super({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES]})
 
         //@ts-ignore
         super.player = new Player(this,{leaveOnEmpty: false,}); 
         this._commandeIdentifier = commandeIdentifier;
+        this._commandeManager = commandeManager;
         this._initEvent();
     }
 
@@ -33,7 +36,8 @@ export abstract class BasicEventListerner extends Client  {
         this.on(WSDiscordEvent.MESSAGE_CREATE, async (message : Message) => {
             if(!message.author.bot && message.content[0] == this._commandeIdentifier && message.content.length > 1)
             {
-                message.content = message.content.split(this._commandeIdentifier)[1]; 
+                message.content = message.content.split(this._commandeIdentifier)[1];
+                message.content = message.content.toLocaleLowerCase(); 
                 this._commande(message);
             }
         });

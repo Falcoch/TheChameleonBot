@@ -1,9 +1,16 @@
+import { Help } from "../command/Help";
 import { Play } from "../command/Play";
-import { CommandeManager } from "../command/register/CommandeRegister";
+import { CommandeRegister } from "../command/register/CommandeRegister";
+import { TheChameleonBotEventListener } from "./ChameleonEventListener";
 
-export class TheChameleonBotCommandeManager extends CommandeManager {
+export class TheChameleonBotCommandeManager extends CommandeRegister {
 
-    public static registerCommande() {
-        TheChameleonBotCommandeManager.addCommande(new Play(true,false));
+    public constructor() {
+        super();
+    }
+
+    protected _registerCommande() {
+        this.addCommande(new Play(true,false));
+        this.addCommande(new Help(true,false));
     }
 }

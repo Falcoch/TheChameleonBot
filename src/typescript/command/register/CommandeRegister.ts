@@ -1,13 +1,20 @@
 import { Client, Message } from "discord.js";
+import { BasicEventListerner } from "../../event/BasicEventListener";
 import { BasicCommande } from "../BasicCommande";
 
-export abstract class CommandeManager {
+export abstract class CommandeRegister {
 
-    private static _registry : BasicCommande[] = [];
+    private _registry : BasicCommande[] = [];
 
-    public static addCommande(commande : BasicCommande ) : boolean {
+    public constructor() {
+        this._registry = [];
+        this._registerCommande();
+    }
+    
+
+    public addCommande(commande : BasicCommande ) : boolean {
         let noDuplicate = true;
-        CommandeManager._registry.forEach(cmd => {
+        this._registry.forEach(cmd => {
             cmd == commande ? noDuplicate = false : "";
         });
 
@@ -15,7 +22,7 @@ export abstract class CommandeManager {
         return noDuplicate;
     }
 
-    public static deleteCommandeByName(commande : BasicCommande ) : boolean {
+    public deleteCommandeByName(commande : BasicCommande ) : boolean {
         for(let i = 0; i < this._registry.length; i++ )
             if(typeof(this._registry[i]) === typeof(commande)) {
                 delete this._registry[i];
@@ -24,10 +31,10 @@ export abstract class CommandeManager {
         return false;
     }
 
-    public static getCommandeByName(commandeName : string) : BasicCommande[] {
+    public getCommandeByName(commandeName : string) : BasicCommande[] {
         commandeName = commandeName.toLowerCase();
         let result : BasicCommande[] = [];
-        CommandeManager._registry.forEach(cmd => {
+        this._registry.forEach(cmd => {
             cmd.commandeName.forEach(name => {
                 name.toLowerCase() == commandeName ? result.push(cmd) : "";
             });
@@ -36,11 +43,15 @@ export abstract class CommandeManager {
         return result;
     }
 
-    public static getRegistrySize() {
-        return CommandeManager._registry.length;
+    public getRegistrySize() {
+        return this._registry.length;
     }
 
-    public static callCommande(client : Client,commande : Message) : boolean {
+    public isCommande() {
+
+    }
+
+    public  callCommande(client : Client,commande : Message) : boolean {
         for(let i = 0; i < this._registry.length; i++ ) {
             if(this._registry[i].activated) {
                 for(let j = 0; j < this._registry[i].commandeName.length; j++) {
@@ -57,4 +68,6 @@ export abstract class CommandeManager {
         }
         return false;    
     }
+
+    protected abstract _registerCommande();
 }
