@@ -36,19 +36,26 @@ export abstract class CommandeRegister {
         let result : BasicCommande[] = [];
         this._registry.forEach(cmd => {
             cmd.commandeName.forEach(name => {
-                name.toLowerCase() == commandeName ? result.push(cmd) : "";
+                name.toLowerCase() == commandeName ? result.push(cmd) : ""; 
             });
             
         });
         return result;
     }
 
-    public getRegistrySize() {
+    public getRegistrySize() : number {
         return this._registry.length;
     }
 
-    public isCommande() {
+    public isCommande(commandeName : string) : boolean {
+        if(this.getCommandeByName(commandeName).length >= 1 )
+            return true;
+        else
+            return false;
+    }
 
+    public getAllCommande() : BasicCommande[] {
+        return this._registry;
     }
 
     public  callCommande(client : Client,commande : Message) : boolean {

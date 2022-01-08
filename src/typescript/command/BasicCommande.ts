@@ -8,6 +8,8 @@ export interface BasicCommande {
     adminOnly : boolean;
     secret : boolean;
 
+    description : string;
+
     execute(client : Client ,commande : Message) : Promise<void>;
     help() : MessageEmbed;
 }

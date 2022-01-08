@@ -13,12 +13,14 @@ export class Play implements BasicCommande {
     activated : boolean;
     adminOnly : boolean;
     secret : boolean;
+    description: string;
 
     public constructor(active : boolean, admOnly : boolean) {
         this.activated = active
         this.adminOnly = admOnly
         this.secret = false;
         this.commandeName = ['play','playing'];
+        this.description = "This commande allow you to play music.";
     }
 
     public async execute(client: Client<boolean>, commande: Message): Promise<void> {
@@ -43,10 +45,21 @@ export class Play implements BasicCommande {
             
             try {
                 if(ytdl.validateURL(args[1])) {
-                    song = await queue.play(args[1]);
+                    song = await queue.play(args[1].split('&')[0]);
+                    queue.songs.length >= 1 
+                    ? 
+                    commande.channel.send({embeds : [EmbedUtil.playingSongMessage(commande.author.username,song)] })
+                    :
+                    commande.channel.send({embeds : [EmbedUtil.addSongToQueueMessage(commande.author.username,song)] });
                 }
                 else if(ytpl.validateID(await ytpl.getPlaylistID(args[1])) || false) {
-                    song = await queue.playlist(args[1]); 
+                    song = await queue.playlist(args[1]);
+                    console.log(ytdl.validateURL(args[1]) + "-playlist");
+                    queue.songs.length >= 1 
+                    ?
+                    commande.channel.send({embeds : [EmbedUtil.playingPlaylistMessage(commande.author.username,song)] })
+                    :
+                    commande.channel.send({embeds : [EmbedUtil.addPlaylistToQueueMessage(commande.author.username,song)] });
                 }
             } 
             catch(err2) { 
@@ -56,14 +69,17 @@ export class Play implements BasicCommande {
                         research += (" " + args[i]);
 
                     song = await queue.play(research,DefaultPlayOptions);
+                    queue.songs.length >= 1 
+                    ? 
+                    commande.channel.send({embeds : [EmbedUtil.playingSongMessage(commande.author.username,song)] })
+                    :
+                    commande.channel.send({embeds : [EmbedUtil.addSongToQueueMessage(commande.author.username,song)] });
                 } 
                 catch (err3) {
                     client.emit(WSBotErrorEvent.CANNOT_LOAD_SONG,args[0],commande.content);
                     return null;
                 }
-                
-            } 
-
+            }
         } catch(err) {
             client.emit(WSBotErrorEvent.UNKNOWN_ERROR);
             return null;
@@ -73,7 +89,7 @@ export class Play implements BasicCommande {
     public help() : MessageEmbed {
         let args = 
         [
-            "Song Link / Playlist Link / Sentence "
+            "Song Link / Playlist Link / Sentence"
         ];
 
         let argsDesc = 
@@ -81,8 +97,6 @@ export class Play implements BasicCommande {
             "What the bot gonna play."
         ];
 
-        let desc = "This commande allow you to play music.";
-
-        return EmbedUtil.helpMessage("Play",args,argsDesc,desc);
+        return EmbedUtil.helpMessage("Play",args,argsDesc,this.description);
     }
 }

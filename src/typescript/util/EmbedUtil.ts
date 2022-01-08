@@ -1,5 +1,7 @@
 import { Playlist, Song } from "discord-music-player";
 import { MessageEmbed,ColorResolvable } from "discord.js";
+import { BasicCommande } from "../command/BasicCommande";
+import { ImageUtil, PaintImage } from "./ImageUtil";
 
 export class EmbedUtil {
     public static _botColor : ColorResolvable = '#3A051D'
@@ -25,7 +27,22 @@ export class EmbedUtil {
         const message = new MessageEmbed()
             .setColor(EmbedUtil._botColor)
             .setTitle("Play")
+            .setThumbnail(ImageUtil.getRandom())
             .setDescription("Currently Playing :『" + song.name + "』")
+            .addFields(
+                { name: 'Author', value: song.author },
+                { name: 'Duration', value: song.duration, inline: true },
+            )
+            .setFooter("Requested by " + authorUsername);
+        return message;
+    }
+
+    public static addSongToQueueMessage(authorUsername : string, song : Song) : MessageEmbed {
+        const message = new MessageEmbed()
+            .setColor(EmbedUtil._botColor)
+            .setTitle("Play")
+            .setThumbnail(ImageUtil.getRandom())
+            .setDescription("Add『" + song.name + "』to queue !")
             .addFields(
                 { name: 'Author', value: song.author },
                 { name: 'Duration', value: song.duration, inline: true },
@@ -38,7 +55,21 @@ export class EmbedUtil {
         const message = new MessageEmbed()
             .setColor(EmbedUtil._botColor)
             .setTitle("Playlist")
+            .setThumbnail(ImageUtil.getRandom())
             .setDescription("Currently Playing the Playlist :『" + playlist.name + "』")
+            .addFields(
+                { name: 'Author', value: playlist.author }
+            )
+            .setFooter("Requested by " + authorUsername);
+        return message;
+    }
+
+    public static addPlaylistToQueueMessage(authorUsername : string, playlist : Playlist) : MessageEmbed {
+        const message = new MessageEmbed()
+            .setColor(EmbedUtil._botColor)
+            .setTitle("Playlist")
+            .setThumbnail(ImageUtil.getRandom())
+            .setDescription("Add 『" + playlist.name + "』 to queue !")
             .addFields(
                 { name: 'Author', value: playlist.author }
             )
@@ -50,6 +81,7 @@ export class EmbedUtil {
         const message = new MessageEmbed()
             .setColor("#FF0000")
             .setTitle("Error")
+            .setThumbnail(ImageUtil.getError())
             .setDescription(description)
             .setThumbnail("../../../gitimage/icon.png");
 
@@ -59,30 +91,68 @@ export class EmbedUtil {
     public static helpMessage(cmdName : string, args : string[],argsDesc : string[], cmdDesc : string) : MessageEmbed {
 
         let argsText = cmdName;
-        args.forEach(a =>{ argsText += (" <" + args + ">"); });
+    
+        args != null ? args.forEach(a =>{ argsText += (" <" + args + ">"); }) : "";
 
         const message = new MessageEmbed() 
             .setColor(EmbedUtil._botColor)
-            .setTitle("Help - " + cmdName)
-            .setDescription(argsText)
-            .setDescription(cmdDesc);
+            .setTitle(cmdName)
+            .setThumbnail(ImageUtil.getHelp())
+            .setFooter("The Chameleon Bot")
+            .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+            .setDescription(cmdDesc)
+            .addFields({name : 'Usage', value : argsText});
 
-        if(args.length > argsDesc.length)
-        {
-            for(let i = 0; i < args.length - argsDesc.length; i++) {
-                argsDesc[i + argsDesc.length] = null;
+        if(args != null && args.length >= 1) {
+            if(args.length > argsDesc.length)
+            {
+                for(let i = 0; i < args.length - argsDesc.length; i++) {
+                    argsDesc[i + argsDesc.length] = null;
+                }
+            }
+
+            for(let i = 0; i < args.length; i++) {
+                if(args[i] != null && args[i] != "") {
+                    argsDesc[i] == null ? args[i] = "..." : "";
+                    argsDesc[i] == "" ? args[i] = "..." : "";
+                    
+                    message.addFields({ name: args[i], value: argsDesc[i] });
+                }
             }
         }
 
-
-        for(let i = 0; i < args.length; i++) {
-            argsDesc[i] == null ? args[i] = "..." : "";
-            argsDesc[i] == "" ? args[i] = "..." : "";
-            
-            message.addFields({ name: args[i], value: argsDesc[i] });
-        }
-
         message.setTimestamp();
+        return message;
+    }
+
+    public static helpList(cmdList : BasicCommande[]) : MessageEmbed {
+        const message = new MessageEmbed() 
+        .setColor(EmbedUtil._botColor)
+        .setTitle("Commande List")
+        .setThumbnail(ImageUtil.getHelp())
+        .setFooter("The Chameleon Bot")
+        .setTimestamp()
+        .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+        if(cmdList.length >= 1)
+        {
+            cmdList.forEach(cmd => {
+                if(cmd.description != null && cmd.description != "") {
+                    message.addFields({ name: cmd.commandeName[0], value: cmd.description });
+                }
+            });
+        }
+        return message;
+    }
+
+    public static changeSong(oldSong,newSong) {
+        const message = new MessageEmbed() 
+        .setColor(EmbedUtil._botColor)
+        .setTitle("Playing Music")
+        .setThumbnail(ImageUtil.getRandom())
+        .setFooter("The Chameleon Bot")
+        .setTimestamp()
+        .setDescription("Now playing 『" + newSong + "』!")
+        .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
         return message;
     }
 }

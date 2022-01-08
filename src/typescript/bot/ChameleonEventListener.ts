@@ -3,6 +3,7 @@ import { Message } from "discord.js";
 import { TheChameleonBotCommandeManager } from "./ChameleonCommandeManager";
 import { WSBotErrorEvent } from "./WSBotErrorEvent";
 import { ConsoleUtils } from "../util/ConsoleUtils";
+import { EmbedUtil } from "../util/EmbedUtil";
 
 export class TheChameleonBotEventListener extends MusicEventListener {
 
@@ -35,6 +36,10 @@ export class TheChameleonBotEventListener extends MusicEventListener {
         this.on(WSBotErrorEvent.UNKNOWN_ERROR, (commandeName,errorMessage) => {
             this._errorUnknownError(commandeName,errorMessage);
         });
+
+        this.on(WSBotErrorEvent.BAD_ARGS_TYPE, (commandeName,typeIntend) => {
+            this._errorBadArgsType(commandeName,typeIntend);
+        })
     }
 
     protected _ready(): void {
@@ -88,6 +93,10 @@ export class TheChameleonBotEventListener extends MusicEventListener {
 
     protected _errorBadArgsNumber(commandeName,numberGiven) {
         ConsoleUtils.logError("Commande Argument : \"" + commandeName + "\" : Needed + " + numberGiven);
+    }
+
+    protected _errorBadArgsType(commandeName,typeIntend) {
+
     }
 
     protected _errorLoadingSong(commandeName,songName,errorMessage) {

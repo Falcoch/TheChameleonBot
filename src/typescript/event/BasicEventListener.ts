@@ -37,7 +37,6 @@ export abstract class BasicEventListerner extends Client  {
             if(!message.author.bot && message.content[0] == this._commandeIdentifier && message.content.length > 1)
             {
                 message.content = message.content.split(this._commandeIdentifier)[1];
-                message.content = message.content.toLocaleLowerCase(); 
                 this._commande(message);
             }
         });
