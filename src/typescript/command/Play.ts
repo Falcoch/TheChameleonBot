@@ -1,11 +1,10 @@
 import { Client,Message,TextBasedChannels,VoiceChannel,StageChannel } from "discord.js";
-import { DefaultPlaylistOptions, DefaultPlayOptions, Playlist, Queue, Song, Utils } from "discord-music-player";
+import { DefaultPlayOptions, Playlist, Queue, Song } from "discord-music-player";
 import { WSBotErrorEvent } from "../bot/WSBotErrorEvent";
 import { CommandeUtils } from "../util/CommandeUtil";
 import { BasicCommande } from "./BasicCommande";
 import ytdl from "ytdl-core";
 import ytpl from "ytpl";
-import { MessageUtil } from "../util/MessageUtil";
 
 export class Play implements BasicCommande {
     
@@ -18,7 +17,7 @@ export class Play implements BasicCommande {
         this.activated = active
         this.adminOnly = admOnly
         this.secret = false;
-        this.commandeName = ['play'];
+        this.commandeName = ['play','playing'];
     }
 
     public async execute(client: Client<boolean>, commande: Message): Promise<void> {
@@ -42,35 +41,36 @@ export class Play implements BasicCommande {
             let song : Song | Playlist = null;
             
             try {
-
                 if(ytdl.validateURL(args[1])) {
-                    console.log("Song");
                     song = await queue.play(args[1]);
-                    commande.channel.send({embeds:[MessageUtil.playingSongMessage(commande.member.user.toString() ,song)]});   
+                      
                 }
                 else if(ytpl.validateID(await ytpl.getPlaylistID(args[1])) || false) {
-                    console.log("Playlist");
                     song = await queue.playlist(args[1]); 
-                    commande.channel.send({embeds:[MessageUtil.playingPlaylistMessage(commande.member.user.toString(),song)]});  
                 }
             } 
             catch(err2) { 
-                console.log("Sentence");
-                let research : string = "";
-                for(let i = 1;i < args.length;i++)
-                    research += (" " + args[i]);
+                try {
+                    let research : string = "";
+                    for(let i = 1;i < args.length;i++)
+                        research += (" " + args[i]);
 
-                song = await queue.play(research,DefaultPlayOptions);
-                commande.channel.send({embeds:[MessageUtil.playingSongMessage(commande.author.username,song)]});
+                    song = await queue.play(research,DefaultPlayOptions);
+                } 
+                catch (err3) {
+                    client.emit(WSBotErrorEvent.CANNOT_LOAD_SONG,args[0],commande.content);
+                    return null;
+                }
+                
             } 
 
         } catch(err) {
-            client.emit(WSBotErrorEvent.UNKNOW_ERROR);
-            console.log(err);
+            client.emit(WSBotErrorEvent.UNKNOWN_ERROR);
+            return null;
         }
     }
 
-    public help(channel: TextBasedChannels): void {
+    public help(channel: TextBasedChannels) : void {
         
     }
 }

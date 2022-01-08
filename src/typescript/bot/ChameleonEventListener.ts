@@ -2,7 +2,8 @@ import { MusicEventListener } from "../event/MusicEventListerner";
 import { Message } from "discord.js";
 import { TheChameleonBotCommandeManager } from "./ChameleonCommandeManager";
 import { WSBotErrorEvent } from "./WSBotErrorEvent";
-import { MessageUtil } from "../util/MessageUtil";
+import { EmbedUtil } from "../util/EmbedUtil";
+import { ConsoleUtils } from "../util/ConsoleUtils";
 
 export class TheChameleonBotEventListener extends MusicEventListener {
 
@@ -12,34 +13,38 @@ export class TheChameleonBotEventListener extends MusicEventListener {
 
     protected _initEvent(): void {
         super._initEvent();
-        this.on(WSBotErrorEvent.EXECUTE_ERROR, () => {
-            MessageUtil.errorMessage("Error when executing the commande !");
+        this.on(WSBotErrorEvent.COMMANDE_EXECUTE, (commandeName,errorMessage) => {
+            this._errorCommandeExecution(commandeName,errorMessage);
         });
 
-        this.on(WSBotErrorEvent.BAD_ARGS_NUMBER, () => {
-            MessageUtil.errorMessage("Bad number of argument !");
+        this.on(WSBotErrorEvent.BAD_ARGS_NUMBER, (commandeName,numberGivend) => {
+            this._errorBadArgsNumber(commandeName,numberGivend);
         });
 
-        this.on(WSBotErrorEvent.CANNOT_LOAD_SONG, () => {
-            MessageUtil.errorMessage("Cannot load this song !");
+        this.on(WSBotErrorEvent.CANNOT_LOAD_SONG, (commandeName,songName,errorMessage) => {
+            this._errorLoadingSong(commandeName,songName,errorMessage);
         });
 
-        this.on(WSBotErrorEvent.NOT_ENOUGHT_PERMISSION, () => {
-            MessageUtil.errorMessage("Not enought permission for that !");
+        this.on(WSBotErrorEvent.NOT_ENOUGHT_PERMISSION, (commandeName,permissionNeeded) => {
+            this._errorPermission(commandeName,permissionNeeded);
         });
 
-        this.on(WSBotErrorEvent.UNKNOW_ERROR, () => {
-            MessageUtil.errorMessage("Not enought Argument ...")
+        this.on(WSBotErrorEvent.UNKNOWN_COMMANDE, (CommandeName) => {
+            this._errorUnknownCommande(CommandeName);
+        });
+
+        this.on(WSBotErrorEvent.UNKNOWN_ERROR, (commandeName,errorMessage) => {
+            this._errorUnknownError(commandeName,errorMessage);
         });
     }
 
     protected _ready(): void {
-        console.log("Ready !");
+        ConsoleUtils.logSuccess("Start-up complete !")
     }
 
     protected _commande(commande: Message): void {
         if(!TheChameleonBotCommandeManager.callCommande(this,commande))
-            this.emit(WSBotErrorEvent.EXECUTE_ERROR); 
+            this.emit(WSBotErrorEvent.COMMANDE_EXECUTE); 
     }
 
     protected _quit(): void {
@@ -76,5 +81,29 @@ export class TheChameleonBotEventListener extends MusicEventListener {
 
     protected _channelEmpty(queue: any): void {
         
+    }
+
+    protected _errorCommandeExecution(commandeName : string,errorMessage : string) {
+        ConsoleUtils.logError("Commande Execution : \"" + commandeName + "\" : " + errorMessage);
+    }
+
+    protected _errorBadArgsNumber(commandeName,numberGiven) {
+        ConsoleUtils.logError("Commande Argument : \"" + commandeName + "\" : Needed + " + numberGiven);
+    }
+
+    protected _errorLoadingSong(commandeName,songName,errorMessage) {
+        ConsoleUtils.logError("Song Loading : \"" + commandeName + "\" :" + errorMessage);
+    }
+
+    protected _errorPermission(commandeName,permissionNeeded) {
+        ConsoleUtils.logError("Commande Permission : \"" + commandeName + "\" : " + permissionNeeded);
+    }
+
+    protected _errorUnknownCommande(commandeName) {
+        ConsoleUtils.logError("Commande Unknown : \"" + commandeName + "\"");
+    }
+
+    protected _errorUnknownError(commandeName,errorMessage) {
+        ConsoleUtils.logError("Unknow Error on : \"" + commandeName + "\" : " + errorMessage);
     }
 }

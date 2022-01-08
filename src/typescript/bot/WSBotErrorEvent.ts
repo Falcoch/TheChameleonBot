@@ -1,7 +1,8 @@
 export enum WSBotErrorEvent {
-    EXECUTE_ERROR = "executeerror",
-    BAD_ARGS_NUMBER = "badargsnumber",
-    NOT_ENOUGHT_PERMISSION = "notenoughperms",
-    CANNOT_LOAD_SONG = "cannotloadsong",
-    UNKNOW_ERROR = "unknownerror"
+    COMMANDE_EXECUTE = "COMMANDE_EXECUTE",
+    BAD_ARGS_NUMBER = "BAD_ARGS_NUMBER",
+    NOT_ENOUGHT_PERMISSION = "NOT_ENOUGHT_PERMISSION",
+    CANNOT_LOAD_SONG = "CANNOT_LOAD_SONG",
+    UNKNOWN_COMMANDE = "UNKNOWN_COMANDE",
+    UNKNOWN_ERROR = "UNKNOWN_ERROR"
 }
