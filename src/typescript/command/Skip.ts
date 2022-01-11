@@ -35,9 +35,7 @@ export class Skip implements BasicCommande {
                     let nbSkip = 1;
                     Number(args[1]) > queue.songs.length ? nbSkip = queue.songs.length : nbSkip = Number(args[1]);
                     commande.channel.send({embeds : [EmbedUtil.normalMessage("Skip","Now skipping "+ args[1] +" songs !")]});
-                    for(let i = 0; i < nbSkip ; i++) {
-                        queue.skip();
-                    }
+                    queue.skip(nbSkip);
                 }
             }
             else {

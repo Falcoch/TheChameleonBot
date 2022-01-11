@@ -11,6 +11,7 @@ export class TheChameleonBot {
 
     public constructor(privateBotToken : string,commandeIdentifier : string = '%') {
         this._privateBotToken = privateBotToken;
+        
         this._commandeManager = new TheChameleonBotCommandeManager();
         this._eventListener = new TheChameleonBotEventListener(this._commandeManager,commandeIdentifier);
     }

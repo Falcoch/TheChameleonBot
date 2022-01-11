@@ -1,5 +1,6 @@
 import { BasicEventListerner } from "./BasicEventListener";
 import { WSDiscordMusicEvent } from "../discord/WSDiscordMusicEvent";
+import { Interaction } from "discord.js";
 
 export abstract class MusicEventListener extends BasicEventListerner {
 

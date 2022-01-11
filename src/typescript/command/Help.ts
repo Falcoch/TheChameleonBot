@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Client, GuildEmoji, Message, MessageEmbed } from "discord.js";
 import { WSBotErrorEvent } from "../bot/WSBotErrorEvent";
 import { CommandeUtils } from "../util/CommandeUtil";
 import { EmbedUtil } from "../util/EmbedUtil";
@@ -34,7 +34,9 @@ export class Help implements BasicCommande {
             }
             else {
                 if(this.commandeRegister.isCommande(args[1])) {
-                    commande.channel.send({ embeds: [this.commandeRegister.getCommandeByName(args[1])[0].help()]});
+                    if(this.commandeRegister.getCommandeByName(args[1])[0].activated && !this.commandeRegister.getCommandeByName(args[1])[0].secret) {
+                        commande.channel.send({ embeds: [this.commandeRegister.getCommandeByName(args[1])[0].help()]});
+                    }
                 }
             }
 

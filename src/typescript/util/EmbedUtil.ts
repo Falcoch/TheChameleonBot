@@ -1,5 +1,5 @@
 import { Playlist, Song } from "discord-music-player";
-import { MessageEmbed,ColorResolvable } from "discord.js";
+import { MessageEmbed,ColorResolvable, Client, Emoji } from "discord.js";
 import { BasicCommande } from "../command/BasicCommande";
 import { ImageUtil, PaintImage } from "./ImageUtil";
 
@@ -10,7 +10,8 @@ export class EmbedUtil {
         const message = new MessageEmbed()
             .setColor(EmbedUtil._botColor)
             .setTitle(title)
-            .setDescription(descrition)
+            .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+            .setDescription(descrition);
         return message;
     }
 
@@ -19,6 +20,7 @@ export class EmbedUtil {
             .setColor(EmbedUtil._botColor)
             .setTitle(title)
             .setDescription(descrition)
+            .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
             .setImage(imageUrl);
         return message;
     }
@@ -28,6 +30,7 @@ export class EmbedUtil {
             .setColor(EmbedUtil._botColor)
             .setTitle("Play")
             .setThumbnail(ImageUtil.getRandom())
+            .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
             .setDescription("Currently Playing :『" + song.name + "』")
             .addFields(
                 { name: 'Author', value: song.author },
@@ -42,6 +45,7 @@ export class EmbedUtil {
             .setColor(EmbedUtil._botColor)
             .setTitle("Play")
             .setThumbnail(ImageUtil.getRandom())
+            .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
             .setDescription("Add『" + song.name + "』to queue !")
             .addFields(
                 { name: 'Author', value: song.author },
@@ -56,9 +60,11 @@ export class EmbedUtil {
             .setColor(EmbedUtil._botColor)
             .setTitle("Playlist")
             .setThumbnail(ImageUtil.getRandom())
-            .setDescription("Currently Playing the Playlist :『" + playlist.name + "』")
+            .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+            .setDescription("Currently Playing the Playlist :『" + playlist.name + "』!")
             .addFields(
-                { name: 'Author', value: playlist.author }
+                { name: 'Size', value: (playlist.songs.length + " songs.")},
+                { name: 'Author', value: playlist.author },
             )
             .setFooter("Requested by " + authorUsername);
         return message;
@@ -69,9 +75,11 @@ export class EmbedUtil {
             .setColor(EmbedUtil._botColor)
             .setTitle("Playlist")
             .setThumbnail(ImageUtil.getRandom())
-            .setDescription("Add 『" + playlist.name + "』 to queue !")
+            .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+            .setDescription("Currently Playing the Playlist :『" + playlist.name + "』!")
             .addFields(
-                { name: 'Author', value: playlist.author }
+                { name: 'Size', value: (playlist.songs.length + " songs.")},
+                { name: 'Author', value: playlist.author },
             )
             .setFooter("Requested by " + authorUsername);
         return message;
@@ -83,6 +91,7 @@ export class EmbedUtil {
             .setTitle("Error")
             .setThumbnail(ImageUtil.getError())
             .setDescription(description)
+            .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
             .setThumbnail("../../../gitimage/icon.png");
 
         return message;
@@ -127,20 +136,26 @@ export class EmbedUtil {
 
     public static helpList(cmdList : BasicCommande[]) : MessageEmbed {
         const message = new MessageEmbed() 
+
         .setColor(EmbedUtil._botColor)
         .setTitle("Commande List")
         .setThumbnail(ImageUtil.getHelp())
         .setFooter("The Chameleon Bot")
         .setTimestamp()
         .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+
+        let desc = "";
+
         if(cmdList.length >= 1)
         {
             cmdList.forEach(cmd => {
                 if(cmd.description != null && cmd.description != "") {
-                    message.addFields({ name: cmd.commandeName[0], value: cmd.description });
+                    //message.addFields({ name: cmd.commandeName[0], value: cmd.description });
+                    desc += ("`" + cmd.commandeName[0] + "` : " + cmd.description + "\n");
                 }
             });
         }
+        message.setDescription(desc);
         return message;
     }
 
@@ -152,6 +167,41 @@ export class EmbedUtil {
         .setFooter("The Chameleon Bot")
         .setTimestamp()
         .setDescription("Now playing 『" + newSong + "』!")
+        .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+        return message;
+    }
+
+    public static channelEmpty() {
+        const message = new MessageEmbed() 
+        .setColor(EmbedUtil._botColor)
+        .setTitle("Playing Music")
+        .setThumbnail(ImageUtil.getRandom())
+        .setFooter("The Chameleon Bot")
+        .setTimestamp()
+        .setDescription("Channel empty !")
+        .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+        return message;
+    }
+
+    public static queueEnd() {
+        const message = new MessageEmbed() 
+        .setColor(EmbedUtil._botColor)
+        .setTitle("Playing Music")
+        .setThumbnail(ImageUtil.getRandom())
+        .setFooter("The Chameleon Bot")
+        .setTimestamp()
+        .setDescription("No more song to play !")
+        .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+        return message;
+    }
+    
+    public static queuePage(desc : string,page : number) {
+        const message = new MessageEmbed()
+        .setColor(EmbedUtil._botColor)
+        .setTitle("Queue - Page : " + page)
+        .setFooter("The Chameleon Bot")
+        .setTimestamp()
+        .setDescription(desc)
         .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
         return message;
     }

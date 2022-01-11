@@ -3,8 +3,9 @@ import { Client, Message, MessageEmbed } from "discord.js";
 import { WSBotErrorEvent } from "../bot/WSBotErrorEvent";
 import { CommandeUtils } from "../util/CommandeUtil";
 import { EmbedUtil } from "../util/EmbedUtil";
+import { BasicCommande } from "./BasicCommande";
 
-export class Resume {
+export class Resume implements BasicCommande {
 
     commandeName : string[];
     activated : boolean;

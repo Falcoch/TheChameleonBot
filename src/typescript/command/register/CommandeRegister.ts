@@ -58,14 +58,12 @@ export abstract class CommandeRegister {
         return this._registry;
     }
 
-    public  callCommande(client : Client,commande : Message) : boolean {
+    public callCommande(client : Client,commande : Message) : boolean {
         for(let i = 0; i < this._registry.length; i++ ) {
             if(this._registry[i].activated) {
                 for(let j = 0; j < this._registry[i].commandeName.length; j++) {
-                    if(this._registry[i].commandeName[j].toLowerCase() == commande.content.split(" ")[0].toLocaleLowerCase())
-                    {   
-                        if(!this._registry[i].adminOnly || (this._registry[i].adminOnly && commande.member.permissions.has("ADMINISTRATOR")))
-                        {
+                    if(this._registry[i].commandeName[j].toLowerCase() == commande.content.split(" ")[0].toLocaleLowerCase()) {   
+                        if(!this._registry[i].adminOnly || (this._registry[i].adminOnly && commande.member.permissions.has("ADMINISTRATOR"))) {
                             this._registry[i].execute(client,commande);
                             return true;
                         }

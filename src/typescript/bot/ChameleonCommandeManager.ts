@@ -2,6 +2,7 @@ import { Clear } from "../command/Clear";
 import { Help } from "../command/Help";
 import { Pause } from "../command/Pause";
 import { Play } from "../command/Play";
+import { List } from "../command/Queue";
 import { CommandeRegister } from "../command/register/CommandeRegister";
 import { Resume } from "../command/Resume";
 import { Skip } from "../command/Skip";
@@ -21,5 +22,6 @@ export class TheChameleonBotCommandeManager extends CommandeRegister {
         this.addCommande(new Pause(true,false));
         this.addCommande(new Resume(true,false));
         this.addCommande(new Clear(true,false));
+        this.addCommande(new List(10,true,false));
     }
 }

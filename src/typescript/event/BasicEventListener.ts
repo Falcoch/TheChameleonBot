@@ -4,7 +4,7 @@
  * call a eventManager 
  */
 
-import {Client, Intents,Message} from "discord.js"
+import {Client, Intents,Interaction,Message, ReactionEmoji, User} from "discord.js"
 import {WSDiscordEvent} from "../discord/WSDiscordEvent"
 import { Player } from "discord-music-player"; 
 import { CommandeRegister } from "../command/register/CommandeRegister";
@@ -15,7 +15,7 @@ export abstract class BasicEventListerner extends Client  {
     protected _commandeManager : CommandeRegister;
 
     public constructor(commandeManager,commandeIdentifier : string = '%') {
-        super({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES]})
+        super({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS]})
 
         //@ts-ignore
         super.player = new Player(this,{leaveOnEmpty: false,}); 
@@ -48,6 +48,7 @@ export abstract class BasicEventListerner extends Client  {
         this.on(WSDiscordEvent.WARN, (message) => {
             this._warn(message);
         });
+
     }
 
     public getCommandeIdentifier() : string  {
@@ -63,5 +64,6 @@ export abstract class BasicEventListerner extends Client  {
     protected abstract _error(error : Error) : void; 
     protected abstract _commande(commande : Message) : void;
     protected abstract _warn(message : string); 
+    
 }
 

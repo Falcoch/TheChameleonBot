@@ -1,9 +1,8 @@
 import { MusicEventListener } from "../event/MusicEventListerner";
 import { Message } from "discord.js";
-import { TheChameleonBotCommandeManager } from "./ChameleonCommandeManager";
 import { WSBotErrorEvent } from "./WSBotErrorEvent";
 import { ConsoleUtils } from "../util/ConsoleUtils";
-import { EmbedUtil } from "../util/EmbedUtil";
+import { Queue } from "discord-music-player";
 
 export class TheChameleonBotEventListener extends MusicEventListener {
 
@@ -83,35 +82,39 @@ export class TheChameleonBotEventListener extends MusicEventListener {
         
     }
 
-    protected _channelEmpty(queue: any): void {
-        
+    protected _channelEmpty(queue: Queue): void {
+        for(let i = 0; i < queue.songs.length; i++) {
+            queue.skip();
+        }
     }
 
     protected _errorCommandeExecution(commandeName : string,errorMessage : string) {
         ConsoleUtils.logError("Commande Execution : \"" + commandeName + "\" : " + errorMessage);
     }
 
-    protected _errorBadArgsNumber(commandeName,numberGiven) {
+    protected _errorBadArgsNumber(commandeName : string,numberGiven : string) {
         ConsoleUtils.logError("Commande Argument : \"" + commandeName + "\" : Needed + " + numberGiven);
     }
 
-    protected _errorBadArgsType(commandeName,typeIntend) {
-
+    protected _errorBadArgsType(commandeName : string,typeIntend : string) {
+        ConsoleUtils.log("Commande Bad Args : \""+ commandeName + "\" given : " + typeIntend + ".");
     }
 
-    protected _errorLoadingSong(commandeName,songName,errorMessage) {
+    protected _errorLoadingSong(commandeName : string ,songName : string ,errorMessage : string) {
         ConsoleUtils.logError("Song Loading : \"" + commandeName + "\" :" + errorMessage);
     }
 
-    protected _errorPermission(commandeName,permissionNeeded) {
+    protected _errorPermission(commandeName : string ,permissionNeeded : string) {
         ConsoleUtils.logError("Commande Permission : \"" + commandeName + "\" : " + permissionNeeded);
     }
 
-    protected _errorUnknownCommande(commandeName) {
+    protected _errorUnknownCommande(commandeName : string) {
         ConsoleUtils.logError("Commande Unknown : \"" + commandeName + "\"");
     }
 
-    protected _errorUnknownError(commandeName,errorMessage) {
+    protected _errorUnknownError(commandeName : string ,errorMessage : string) {
         ConsoleUtils.logError("Unknow Error on : \"" + commandeName + "\" : " + errorMessage);
     }
+
+    
 }
