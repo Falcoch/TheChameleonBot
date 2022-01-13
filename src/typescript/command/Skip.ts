@@ -21,20 +21,20 @@ export class Skip implements BasicCommande {
         this.description = "Allow you to skip the crurrent music.";
     }
 
-    public async execute(client: Client<boolean>, commande: Message): Promise<void> {
+    public async execute(client: Client<boolean>, commande: Message, silent : boolean): Promise<void> {
         try {
             const args : string[] = CommandeUtils.getArgument(commande.content);
             //@ts-ignore
             let queue : Queue = client.player.getQueue(commande.guild.id);
             if(queue != null) {
                 if(args[1] == null || args[1] == '1') {
-                    commande.channel.send({embeds : [EmbedUtil.normalMessage("Skip","Now skipping + 『" + queue.nowPlaying.name + "』 !")]});
+                    !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Skip","Now skipping + 『" + queue.nowPlaying.name + "』 !")]}) : "";
                     queue.skip();
                 } else {
 
                     let nbSkip = 1;
                     Number(args[1]) > queue.songs.length ? nbSkip = queue.songs.length : nbSkip = Number(args[1]);
-                    commande.channel.send({embeds : [EmbedUtil.normalMessage("Skip","Now skipping "+ args[1] +" songs !")]});
+                    !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Skip","Now skipping "+ args[1] +" songs !")]}) : "";
                     queue.skip(nbSkip);
                 }
             }
@@ -52,7 +52,7 @@ export class Skip implements BasicCommande {
     public help() : MessageEmbed {
         let args = 
         [
-            "(optional) Number of skip"
+            "(optional) - Number of skip"
         ];
 
         let argsDesc = 

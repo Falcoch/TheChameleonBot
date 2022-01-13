@@ -21,17 +21,17 @@ export class Stop implements BasicCommande {
         this.description = "Allow you to stop the crurrent music.";
     }
 
-    public async execute(client: Client<boolean>, commande: Message): Promise<void> {
+    public async execute(client: Client<boolean>, commande: Message, silent : boolean): Promise<void> {
         try {
             const args : string[] = CommandeUtils.getArgument(commande.content);
             //@ts-ignore
             let queue : Queue = client.player.getQueue(commande.guild.id);
             if(queue != null) {
-                commande.channel.send({embeds : [EmbedUtil.normalMessage("Stop","Now stopping music !")]});
+                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Stop","Now stopping music !")]}) : "";
                 queue.stop();
             }
             else {
-                commande.channel.send({embeds : [EmbedUtil.normalMessage("Stop","There is nothing to stop !")]});
+                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Stop","There is nothing to stop !")]}) : "";
             }
 
         } catch(err) {

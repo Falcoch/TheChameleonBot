@@ -21,17 +21,17 @@ export class Clear implements BasicCommande {
         this.description = "Allow you to clear the queue.";
     }
 
-    public async execute(client: Client<boolean>, commande: Message): Promise<void> {
+    public async execute(client: Client<boolean>, commande: Message, silent : boolean): Promise<void> {
         try {
             const args : string[] = CommandeUtils.getArgument(commande.content);
             //@ts-ignore
             let queue : Queue = client.player.getQueue(commande.guild.id);
             if(queue != null) {
                 queue.clearQueue();
-                commande.channel.send({embeds : [EmbedUtil.normalMessage("Clear","Now clearing the queue !")]});
+                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Clear","Now clearing the queue !")]}) : "";
             } 
             else {
-                commande.channel.send({embeds : [EmbedUtil.normalMessage("Clear","There is nothing to clear !")]});
+                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Clear","There is nothing to clear !")]}) : "";
             }
 
         } catch(err) {

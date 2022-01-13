@@ -21,17 +21,17 @@ export class Resume implements BasicCommande {
         this.description = "Allow you to unpause the crurrent music.";
     }
 
-    public async execute(client: Client<boolean>, commande: Message): Promise<void> {
+    public async execute(client: Client<boolean>, commande: Message, silent : boolean): Promise<void> {
         try {
             const args : string[] = CommandeUtils.getArgument(commande.content);
             //@ts-ignore
             let queue : Queue = client.player.getQueue(commande.guild.id);
             if(queue != null) {
-                commande.channel.send({embeds : [EmbedUtil.normalMessage("resume","Now resuming + 『" + queue.nowPlaying.name + "』 !")]});
+                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("resume","Now resuming + 『" + queue.nowPlaying.name + "』 !")]}) : "";
                 queue.setPaused(false);
             } 
             else {
-                commande.channel.send({embeds : [EmbedUtil.normalMessage("Resume","There is nothing to resume !")]});
+                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Resume","There is nothing to resume !")]}) : "";
             }
 
         } catch(err) {

@@ -24,18 +24,18 @@ export class Pause implements BasicCommande {
         this.state = false;
     }
 
-    public async execute(client: Client<boolean>, commande: Message): Promise<void> {
+    public async execute(client: Client<boolean>, commande: Message, silent : boolean): Promise<void> {
         try {
             const args : string[] = CommandeUtils.getArgument(commande.content);
             //@ts-ignore
             let queue : Queue = client.player.getQueue(commande.guild.id);
             if(queue != null) {
                 this.state = !this.state;
-                commande.channel.send({embeds : [EmbedUtil.normalMessage("Pause","Now pausing + 『" + queue.nowPlaying.name + "』 !")]});
+                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Pause","Now pausing + 『" + queue.nowPlaying.name + "』 !")]}) : "";
                 queue.setPaused(this.state);
             }
             else {
-                commande.channel.send({embeds : [EmbedUtil.normalMessage("Pause","There is nothing to pause !")]});
+                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Pause","There is nothing to pause !")]}) : "";
             }
         } catch(err) {
             client.emit(WSBotErrorEvent.UNKNOWN_ERROR,this.commandeName[0],err);

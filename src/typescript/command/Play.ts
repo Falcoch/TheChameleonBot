@@ -1,4 +1,4 @@
-import { Client,Message,MessageEmbed,VoiceChannel,StageChannel } from "discord.js";
+import { Client,Message,MessageEmbed,VoiceChannel,StageChannel, Channel } from "discord.js";
 import { DefaultPlayOptions, Playlist, Queue, Song } from "discord-music-player";
 import { WSBotErrorEvent } from "../bot/WSBotErrorEvent";
 import { CommandeUtils } from "../util/CommandeUtil";
@@ -23,7 +23,7 @@ export class Play implements BasicCommande {
         this.description = "This commande allow you to play music.";
     }
 
-    public async execute(client: Client<boolean>, commande: Message): Promise<void> {
+    public async execute(client: Client<boolean>, commande: Message, silent : boolean): Promise<void> {
         try {
             const voiceChannel : VoiceChannel | StageChannel  = commande.member.voice.channel;
             const args : string[] = CommandeUtils.getArgument(commande.content);
@@ -48,18 +48,17 @@ export class Play implements BasicCommande {
                     song = await queue.play(args[1].split('&')[0]);
                     queue.songs.length >= 1 
                     ? 
-                    commande.channel.send({embeds : [EmbedUtil.playingSongMessage(commande.author.username,song)] })
+                    !silent ?commande.channel.send({embeds : [EmbedUtil.playingSongMessage(commande.author.username,song)] }) : ""
                     :
-                    commande.channel.send({embeds : [EmbedUtil.addSongToQueueMessage(commande.author.username,song)] });
+                    !silent ?commande.channel.send({embeds : [EmbedUtil.addSongToQueueMessage(commande.author.username,song)] }) : "";
                 }
                 else if(ytpl.validateID(await ytpl.getPlaylistID(args[1])) || false) {
                     song = await queue.playlist(args[1]);
-                    console.log(ytdl.validateURL(args[1]) + "-playlist");
                     queue.songs.length >= 1 
                     ?
-                    commande.channel.send({embeds : [EmbedUtil.playingPlaylistMessage(commande.author.username,song)] })
+                    !silent ?commande.channel.send({embeds : [EmbedUtil.playingPlaylistMessage(commande.author.username,song)] }) : ""
                     :
-                    commande.channel.send({embeds : [EmbedUtil.addPlaylistToQueueMessage(commande.author.username,song)] });
+                    !silent ?commande.channel.send({embeds : [EmbedUtil.addPlaylistToQueueMessage(commande.author.username,song)] }) : "";
                 }
             } 
             catch(err2) { 
@@ -71,9 +70,9 @@ export class Play implements BasicCommande {
                     song = await queue.play(research,DefaultPlayOptions);
                     queue.songs.length >= 1 
                     ? 
-                    commande.channel.send({embeds : [EmbedUtil.playingSongMessage(commande.author.username,song)] })
+                    !silent ?commande.channel.send({embeds : [EmbedUtil.playingSongMessage(commande.author.username,song)] }) : ""
                     :
-                    commande.channel.send({embeds : [EmbedUtil.addSongToQueueMessage(commande.author.username,song)] });
+                    !silent ?commande.channel.send({embeds : [EmbedUtil.addSongToQueueMessage(commande.author.username,song)] }) : "";
                 } 
                 catch (err3) {
                     client.emit(WSBotErrorEvent.CANNOT_LOAD_SONG,args[0],commande.content);

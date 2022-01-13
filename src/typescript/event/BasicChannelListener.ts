@@ -1,29 +1,74 @@
-import { TextChannel } from "discord.js";
+import { Song } from "discord-music-player";
+import { Client, Message, TextChannel } from "discord.js";
+import { WSBotChannelErrorEvent } from "../bot/WSBotErrorEvent";
+import { BasicCommande } from "../command/BasicCommande";
 import { CommandeRegister } from "../command/register/CommandeRegister";
+
+export enum PanelButtonKey {
+    PAUSE = "Button_Pause",
+    STOP = "Button_Stop",
+    SKIP = "Button_Skip",
+    LOOP_MODE = "Button_Loope_Mode",
+    SHUFFLE_MODE = "Button_Shuffle_Mode"
+}
 
 export abstract class BasicChannelListener {
     
-    _active : boolean = false;
-    _commandeManager : CommandeRegister = null;
-    _channel : TextChannel = null
+    _commandeManager : CommandeRegister;
+    _client : Client;
 
-    public constructor(commandeManager : CommandeRegister) {
-        this._active = false;
+    _channel : TextChannel;
+    _messageCommande : Map<string,BasicCommande>;
+
+    _commandeIdentifier : string;
+
+    _doubleListen : boolean;
+
+    public constructor(client : Client, commandeManager : CommandeRegister,commandeIdentifier : string) {
+        this._client = client;
         this._commandeManager = commandeManager;
-        this._channel = null;
+        this._commandeIdentifier = commandeIdentifier;
+        this._messageCommande = new Map<string,BasicCommande>();
+        this._messageCommande.set(PanelButtonKey.PAUSE,null);
+        this._messageCommande.set(PanelButtonKey.STOP,null);
+        this._messageCommande.set(PanelButtonKey.SKIP,null);
+        this._messageCommande.set(PanelButtonKey.LOOP_MODE,null);
+        this._messageCommande.set(PanelButtonKey.SHUFFLE_MODE,null);
+        this._initPannelCommande();
+        this._initChannelCommande();
+        this._doubleListen = true;
     }
 
-    public link(channel : TextChannel) : void {
-        this._active = true;
-        this._channel = channel;
+    protected abstract _initChannelCommande();
+
+    public abstract callCommande(message : Message) : boolean;
+    protected abstract _initPannelCommande() : void;
+    public abstract update() : void;
+    protected abstract _pannelMessage(song : Song) : void;
+
+    public getChannel() : TextChannel {
+        return this._channel;
     }
 
-    public unLink(channel : TextChannel) : void {
-        this._active = false;
-        this._channel = null;
+    public linkToChannel(channels : TextChannel) : boolean {
+        try {
+            this._channel = channels;    
+        } 
+        catch(err) {
+            this._client.emit(WSBotChannelErrorEvent.CHANNEL_LINKING,err);
+            return false;
+        }
+
+        return true
     }
 
-    public setup(channel : TextChannel) : void {
-
+    public unLinkToChannel() : boolean {
+        try {
+            this._channel = null
+        } catch(err) {
+            this._client.emit(WSBotChannelErrorEvent.CHANNEL_UNLINK,err);
+            return false;
+        }
+        return true
     }
 }

@@ -12,12 +12,12 @@ export class Dev implements BasicCommande {
     public constructor(active : boolean,admOnely : boolean) {
         this.activated = active;
         this.adminOnly = admOnely;
-        this.commandeName = ['help'];
+        this.commandeName = ['dev','developement','d'];
         this.secret = false;
-        this.description = "Allow you to see help about a command.";
+        this.description = "Used to use commande as a developper, only advanced pepople should use this !";
     }
 
-    public async execute(client: Client<boolean>, commande: Message): Promise<void> {
+    public async execute(client: Client<boolean>, commande: Message, silent : boolean): Promise<void> {
         
     }
 

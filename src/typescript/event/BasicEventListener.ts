@@ -4,7 +4,7 @@
  * call a eventManager 
  */
 
-import {Client, Intents,Interaction,Message, ReactionEmoji, User} from "discord.js"
+import {Channel, Client, Intents,Message} from "discord.js"
 import {WSDiscordEvent} from "../discord/WSDiscordEvent"
 import { Player } from "discord-music-player"; 
 import { CommandeRegister } from "../command/register/CommandeRegister";
@@ -36,8 +36,9 @@ export abstract class BasicEventListerner extends Client  {
         this.on(WSDiscordEvent.MESSAGE_CREATE, async (message : Message) => {
             if(!message.author.bot && message.content[0] == this._commandeIdentifier && message.content.length > 1)
             {
-                message.content = message.content.split(this._commandeIdentifier)[1];
-                this._commande(message);
+                let newMessage : Message = Object.create(message);
+                newMessage.content = message.content.split(this._commandeIdentifier)[1];
+                this._commande(newMessage);
             }
         });
 
@@ -47,6 +48,18 @@ export abstract class BasicEventListerner extends Client  {
 
         this.on(WSDiscordEvent.WARN, (message) => {
             this._warn(message);
+        });
+
+        this.on(WSDiscordEvent.CHANNEL_DELETE, (channel : Channel) => {
+            this._channelDelete(channel);
+        });
+
+        this.on(WSDiscordEvent.CHANNEL_CREATE, (channel) => {
+            this._channelCreate(channel);
+        });
+
+        this.on(WSDiscordEvent.CHANNEL_UPDATE, (channel) => {
+            this._channelUpdate(channel);
         });
 
     }
@@ -64,6 +77,10 @@ export abstract class BasicEventListerner extends Client  {
     protected abstract _error(error : Error) : void; 
     protected abstract _commande(commande : Message) : void;
     protected abstract _warn(message : string); 
+
+    protected abstract _channelDelete(channel : Channel);
+    protected abstract _channelCreate(channel : Channel);
+    protected abstract _channelUpdate(channel : Channel);
     
 }
 

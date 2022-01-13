@@ -1,6 +1,7 @@
 import { Playlist, Song } from "discord-music-player";
-import { MessageEmbed,ColorResolvable, Client, Emoji } from "discord.js";
+import { MessageEmbed,ColorResolvable } from "discord.js";
 import { BasicCommande } from "../command/BasicCommande";
+import { ChameleonEmoji } from "./EmojiUtils";
 import { ImageUtil, PaintImage } from "./ImageUtil";
 
 export class EmbedUtil {
@@ -150,7 +151,6 @@ export class EmbedUtil {
         {
             cmdList.forEach(cmd => {
                 if(cmd.description != null && cmd.description != "") {
-                    //message.addFields({ name: cmd.commandeName[0], value: cmd.description });
                     desc += ("`" + cmd.commandeName[0] + "` : " + cmd.description + "\n");
                 }
             });
@@ -159,7 +159,7 @@ export class EmbedUtil {
         return message;
     }
 
-    public static changeSong(oldSong,newSong) {
+    public static changeSong(oldSong,newSong) : MessageEmbed {
         const message = new MessageEmbed() 
         .setColor(EmbedUtil._botColor)
         .setTitle("Playing Music")
@@ -171,7 +171,7 @@ export class EmbedUtil {
         return message;
     }
 
-    public static channelEmpty() {
+    public static channelEmpty() : MessageEmbed {
         const message = new MessageEmbed() 
         .setColor(EmbedUtil._botColor)
         .setTitle("Playing Music")
@@ -183,7 +183,7 @@ export class EmbedUtil {
         return message;
     }
 
-    public static queueEnd() {
+    public static queueEnd() : MessageEmbed {
         const message = new MessageEmbed() 
         .setColor(EmbedUtil._botColor)
         .setTitle("Playing Music")
@@ -195,7 +195,7 @@ export class EmbedUtil {
         return message;
     }
     
-    public static queuePage(desc : string,page : number) {
+    public static queuePage(desc : string,page : number) : MessageEmbed {
         const message = new MessageEmbed()
         .setColor(EmbedUtil._botColor)
         .setTitle("Queue - Page : " + page)
@@ -203,6 +203,43 @@ export class EmbedUtil {
         .setTimestamp()
         .setDescription(desc)
         .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+        return message;
+    }
+
+    public static credit() : MessageEmbed {
+        const message = new MessageEmbed()
+        .setColor(EmbedUtil._botColor)
+        .setTitle("__Crédit__")
+        .setDescription("**Dev.** : *Falcoch* ")
+        .setTimestamp()
+        .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+        .setFooter("The Chameleon Bot")
+        .setFields( {name : "**Version**", value : "*2.2*"},
+                    {name : "**Description**", value : "*A simple Chameleon that play music* " + ChameleonEmoji.NICE})
+        .setImage(PaintImage.BASIC);
+
+        return message;
+    }
+    
+    public static channelMessage(song : Song) : MessageEmbed {
+        const message = new MessageEmbed()
+        .setColor(EmbedUtil._botColor)
+        .setTitle("__The Chameleon Bot__");
+
+        if(song == null) {
+            message.setDescription("__Playing :__ *" + "..." + "*\n *duration* : " + "..." + ".")
+            .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+            .setImage(PaintImage.MUSIC);
+        } 
+        else {
+            message.setDescription("__Playing :__ *" + song.name + "*\n *duration* : " + song.duration + ".")
+            .setURL(song.url)
+            .setImage(song.thumbnail);
+        }
+
+        message.setTimestamp()
+        .setFooter("The Chameleon Bot");
+
         return message;
     }
 }

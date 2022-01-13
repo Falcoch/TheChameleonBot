@@ -1,5 +1,4 @@
 import { Client, Message } from "discord.js";
-import { BasicEventListerner } from "../../event/BasicEventListener";
 import { BasicCommande } from "../BasicCommande";
 
 export abstract class CommandeRegister {
@@ -38,7 +37,6 @@ export abstract class CommandeRegister {
             cmd.commandeName.forEach(name => {
                 name.toLowerCase() == commandeName ? result.push(cmd) : ""; 
             });
-            
         });
         return result;
     }
@@ -58,13 +56,13 @@ export abstract class CommandeRegister {
         return this._registry;
     }
 
-    public callCommande(client : Client,commande : Message) : boolean {
+    public callCommande(client : Client,commande : Message,silent : boolean = false) : boolean {
         for(let i = 0; i < this._registry.length; i++ ) {
             if(this._registry[i].activated) {
                 for(let j = 0; j < this._registry[i].commandeName.length; j++) {
                     if(this._registry[i].commandeName[j].toLowerCase() == commande.content.split(" ")[0].toLocaleLowerCase()) {   
                         if(!this._registry[i].adminOnly || (this._registry[i].adminOnly && commande.member.permissions.has("ADMINISTRATOR"))) {
-                            this._registry[i].execute(client,commande);
+                            this._registry[i].execute(client,commande,silent);
                             return true;
                         }
                     }

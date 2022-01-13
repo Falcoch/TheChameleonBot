@@ -10,7 +10,7 @@ export interface BasicCommande {
 
     description : string;
 
-    execute(client : Client ,commande : Message) : Promise<void>;
+    execute(client : Client ,commande : Message, silent : boolean) : Promise<void>;
     help() : MessageEmbed;
 }
 

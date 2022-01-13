@@ -1,13 +1,19 @@
 import { MusicEventListener } from "../event/MusicEventListerner";
-import { Message } from "discord.js";
-import { WSBotErrorEvent } from "./WSBotErrorEvent";
+import { WSBotChannelErrorEvent, WSBotErrorEvent } from "./WSBotErrorEvent";
 import { ConsoleUtils } from "../util/ConsoleUtils";
 import { Queue } from "discord-music-player";
+import { ChameleonChannelListener } from "./ChameleonChannelListener";
+import { Channel, Message } from "discord.js";
+import { CommandeRegister } from "../command/register/CommandeRegister";
+import { WSDiscordEvent } from "../discord/WSDiscordEvent";
 
 export class TheChameleonBotEventListener extends MusicEventListener {
 
-    public constructor(commandeManager,commandeIdentifier : string = '%') {
+    private _channelListener : ChameleonChannelListener
+
+    public constructor(commandeManager : CommandeRegister,commandeIdentifier : string = '%') {
         super(commandeManager,commandeIdentifier); 
+        this._channelListener = new ChameleonChannelListener(this,commandeManager,commandeIdentifier);
     }
 
     protected _initEvent(): void {
@@ -38,16 +44,69 @@ export class TheChameleonBotEventListener extends MusicEventListener {
 
         this.on(WSBotErrorEvent.BAD_ARGS_TYPE, (commandeName,typeIntend) => {
             this._errorBadArgsType(commandeName,typeIntend);
-        })
+        });
+
+        this.on(WSBotChannelErrorEvent.CHANNEL_UNKNOWN_COMMANDE, (commandeName) => {
+            this._errorChannelUnknownCommande(commandeName);
+        });
+
+        this.on(WSBotChannelErrorEvent.CHANNEL_UNKNOWN_ERROR, (commandeName,errorMessage) => {
+            this._errorUnknownChannelerror(commandeName,errorMessage);
+        });
+
+        this.on(WSBotChannelErrorEvent.CHANNEL_CREATION, (errorMessage) => {
+            this._errorChannelCreation(errorMessage);
+        });
+
+        this.on(WSDiscordEvent.MESSAGE_CREATE,(message) => {
+            if(!message.author.bot) {
+                if(this._channelListener._channel != null || this._channelListener._doubleListen == true)
+                    if(message.channel == this._channelListener._channel)
+                        this._channelCommande(message);
+            }
+        });
     }
 
     protected _ready(): void {
         ConsoleUtils.logSuccess("Start-up complete !")
     }
 
-    protected _commande(commande: Message): void {
-        if(!this._commandeManager.callCommande(this,commande))
-            this.emit(WSBotErrorEvent.UNKNOWN_COMMANDE,commande.content.split(' ')[0]); 
+    public _commande(commande: Message): void {
+        try {
+            if(this._channelListener.getChannel() == null || this._channelListener._doubleListen == true) {
+                if(!this._commandeManager.callCommande(this,commande))
+                    this.emit(WSBotErrorEvent.UNKNOWN_COMMANDE,commande.content.split(' ')[0],'final'); 
+            }
+        }
+        catch(err) {
+            this.emit(WSBotErrorEvent.UNKNOWN_ERROR,commande.content.split(' ')[0],err);
+        }
+    }
+
+    public _channelCommande(message : Message) {
+        if(this._channelListener.getChannel() != null || this._channelListener._doubleListen == true) {
+            try {
+                if(!this._channelListener.callCommande(message))
+                    this.emit(WSBotChannelErrorEvent.CHANNEL_UNKNOWN_COMMANDE,message.content);
+            }
+            catch(err) {
+                this.emit(WSBotChannelErrorEvent.CHANNEL_UNKNOWN_COMMANDE,message.content,err);
+            }
+        }
+    }
+
+    protected _channelDelete(channel: Channel) {
+        if(channel == this._channelListener.getChannel()) {
+            this._channelListener.unLinkToChannel();
+        }
+    }
+
+    protected _channelCreate(channel: Channel) {
+        
+    }
+
+    protected _channelUpdate(channel: Channel) {
+    
     }
 
     protected _quit(): void {
@@ -116,5 +175,17 @@ export class TheChameleonBotEventListener extends MusicEventListener {
         ConsoleUtils.logError("Unknow Error on : \"" + commandeName + "\" : " + errorMessage);
     }
 
-    
+    protected _errorUnknownChannelerror(commandeName : string, errorMessage : string) {
+        ConsoleUtils.logError("Unknow Channel Error on : \"" + commandeName + "\" : " + errorMessage);
+    }
+
+    protected _errorChannelCreation(errorMessage : string) {
+        ConsoleUtils.logError("Creation Channel Error : \" Setup-Channel \" : " + errorMessage);
+    }
+
+    protected _errorChannelUnknownCommande(commandeName : string) {
+        ConsoleUtils.logError("Channel Commande Unknown : \"" + commandeName + "\"");
+    }
+
+
 }

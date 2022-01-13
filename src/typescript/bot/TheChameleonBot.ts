@@ -1,7 +1,5 @@
 import { TheChameleonBotEventListener } from "./ChameleonEventListener";
-
 import { TheChameleonBotCommandeManager } from "./ChameleonCommandeManager";
-
 
 export class TheChameleonBot {
     

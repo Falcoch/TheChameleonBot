@@ -24,7 +24,7 @@ export class Help implements BasicCommande {
         this.description = "Allow you to see help about a command.";
     }
 
-    public async execute(client: Client<boolean>, commande: Message): Promise<void> {
+    public async execute(client: Client<boolean>, commande: Message, silent : boolean): Promise<void> {
         try {
 
             const args : string[] = CommandeUtils.getArgument(commande.content);

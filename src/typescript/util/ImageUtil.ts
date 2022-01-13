@@ -12,6 +12,7 @@ export enum PaintImage {
     TRYST = 'https://github.com/Falcoch/TheChameleonBot/blob/master/image/FalcochPaintTryst.png?raw=true',
     VERY_HAPPY = 'https://github.com/Falcoch/TheChameleonBot/blob/master/image/FalcochPaintVeryHappy.png?raw=true',
     WOW = 'https://github.com/Falcoch/TheChameleonBot/blob/master/image/FalcochPaintWow.png?raw=true',
+    MUSIC = 'https://raw.githubusercontent.com/Falcoch/TheChameleonBot/master/gitimage/FalcochPaintMusic.png',
 }
 
 export class ImageUtil {
@@ -36,6 +37,10 @@ export class ImageUtil {
             PaintImage.SHIT,PaintImage.REFLECT,PaintImage.DEAD,PaintImage.TRYST
         ]
         return data[Math.floor(Math.random() * data.length)];
+    }
+
+    public static getMusic() : string {
+        return PaintImage.MUSIC;
     }
 }
 
