@@ -3,6 +3,7 @@ import { Client, Message, MessageEmbed } from "discord.js";
 import { WSBotErrorEvent } from "../bot/WSBotErrorEvent";
 import { CommandeUtils } from "../util/CommandeUtil";
 import { EmbedUtil } from "../util/EmbedUtil";
+import { ChameleonEmoji } from "../util/EmojiUtils";
 import { BasicCommande } from "./BasicCommande";
 
 export class Resume implements BasicCommande {
@@ -27,20 +28,20 @@ export class Resume implements BasicCommande {
             //@ts-ignore
             let queue : Queue = client.player.getQueue(commande.guild.id);
             if(queue != null) {
-                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("resume","Now resuming + 『" + queue.nowPlaying.name + "』 !")]}) : "";
                 queue.setPaused(false);
+                commande.react(ChameleonEmoji.NICE);
             } 
             else {
                 !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Resume","There is nothing to resume !")]}) : "";
             }
 
         } catch(err) {
-            client.emit(WSBotErrorEvent.UNKNOWN_ERROR,this.commandeName[0],err);
+            client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,this.commandeName[0],err,commande.channel);
             return null;
         }
     }
 
     public help() : MessageEmbed {
-        return EmbedUtil.helpMessage("Resume",null,null,this.description);
+        return EmbedUtil.helpMessage("Resume",this.commandeName,null,null,this.description);
     }
 }

@@ -3,6 +3,7 @@ import { Client, Message, MessageEmbed } from "discord.js";
 import { WSBotErrorEvent } from "../bot/WSBotErrorEvent";
 import { CommandeUtils } from "../util/CommandeUtil";
 import { EmbedUtil } from "../util/EmbedUtil";
+import { ChameleonEmoji } from "../util/EmojiUtils";
 import { BasicCommande } from "./BasicCommande";
 
 export class Pause implements BasicCommande {
@@ -31,19 +32,19 @@ export class Pause implements BasicCommande {
             let queue : Queue = client.player.getQueue(commande.guild.id);
             if(queue != null) {
                 this.state = !this.state;
-                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Pause","Now pausing + 『" + queue.nowPlaying.name + "』 !")]}) : "";
                 queue.setPaused(this.state);
+                commande.react(ChameleonEmoji.NICE);
             }
             else {
                 !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Pause","There is nothing to pause !")]}) : "";
             }
         } catch(err) {
-            client.emit(WSBotErrorEvent.UNKNOWN_ERROR,this.commandeName[0],err);
+            client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,this.commandeName[0],err,commande.channel);
             return null;
         }
     }
 
     public help() : MessageEmbed {
-        return EmbedUtil.helpMessage("Pause",null,null,this.description);
+        return EmbedUtil.helpMessage("Pause",this.commandeName,null,null,this.description);
     }
 }

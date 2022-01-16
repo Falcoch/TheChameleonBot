@@ -3,6 +3,7 @@ import { Client, Message, MessageEmbed } from "discord.js";
 import { WSBotErrorEvent } from "../bot/WSBotErrorEvent";
 import { CommandeUtils } from "../util/CommandeUtil";
 import { EmbedUtil } from "../util/EmbedUtil";
+import { ChameleonEmoji } from "../util/EmojiUtils";
 import { BasicCommande } from "./BasicCommande";
 
 export class Clear implements BasicCommande {
@@ -28,19 +29,19 @@ export class Clear implements BasicCommande {
             let queue : Queue = client.player.getQueue(commande.guild.id);
             if(queue != null) {
                 queue.clearQueue();
-                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Clear","Now clearing the queue !")]}) : "";
+                commande.react(ChameleonEmoji.NICE);
             } 
             else {
                 !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Clear","There is nothing to clear !")]}) : "";
             }
 
         } catch(err) {
-            client.emit(WSBotErrorEvent.UNKNOWN_ERROR,this.commandeName[0],err);
+            client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,this.commandeName[0],err,commande.channel);
             return null;
         }
     }
 
     public help() : MessageEmbed {
-        return EmbedUtil.helpMessage("Clear",null,null,this.description);
+        return EmbedUtil.helpMessage("Clear",this.commandeName,null,null,this.description);
     }
 }

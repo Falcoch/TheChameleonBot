@@ -73,13 +73,23 @@ export class List implements BasicCommande {
             }
 
         } catch(err) {
-            client.emit(WSBotErrorEvent.UNKNOWN_ERROR,commande,err);
+            client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,commande,err,commande.channel);
         }
         
     }
 
     public help(): MessageEmbed {
-        return null;
+        let args = 
+        [
+            "Page Number"
+        ];
+
+        let argsDesc = 
+        [
+            "The page of the queue you want to see."
+        ];
+
+        return EmbedUtil.helpMessage("Help",this.commandeName,args,argsDesc,this.description);
     }
 
     private _makeList(page : number,showing : number,content : Song[]) : string {

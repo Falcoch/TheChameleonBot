@@ -27,20 +27,20 @@ export class Stop implements BasicCommande {
             //@ts-ignore
             let queue : Queue = client.player.getQueue(commande.guild.id);
             if(queue != null) {
-                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Stop","Now stopping music !")]}) : "";
                 queue.stop();
+                !silent ? commande.channel.send({embeds : [EmbedUtil.normalMessage("Stop","Now stopping music !")]}) : "";
             }
             else {
-                !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Stop","There is nothing to stop !")]}) : "";
+                !silent ? commande.channel.send({embeds : [EmbedUtil.normalMessage("Stop","There is nothing to stop !")]}) : "";
             }
 
         } catch(err) {
-            client.emit(WSBotErrorEvent.UNKNOWN_ERROR,this.commandeName[0],err);
+            client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,this.commandeName[0],err,commande.channel);
             return null;
         }
     }
 
     public help() : MessageEmbed {
-        return EmbedUtil.helpMessage("Stop",null,null,this.description);
+        return EmbedUtil.helpMessage("Stop",this.commandeName,null,null,this.description);
     }
 }

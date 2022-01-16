@@ -13,6 +13,7 @@ export enum PaintImage {
     VERY_HAPPY = 'https://github.com/Falcoch/TheChameleonBot/blob/master/image/FalcochPaintVeryHappy.png?raw=true',
     WOW = 'https://github.com/Falcoch/TheChameleonBot/blob/master/image/FalcochPaintWow.png?raw=true',
     MUSIC = 'https://raw.githubusercontent.com/Falcoch/TheChameleonBot/master/gitimage/FalcochPaintMusic.png',
+    CHANNEL = "https://raw.githubusercontent.com/Falcoch/TheChameleonBot/master/image/FalcochPaintCrazyChannel.png",
 }
 
 export class ImageUtil {
@@ -41,6 +42,10 @@ export class ImageUtil {
 
     public static getMusic() : string {
         return PaintImage.MUSIC;
+    }
+
+    public static getChannel() : string {
+        return PaintImage.CHANNEL;
     }
 }
 

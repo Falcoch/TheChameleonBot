@@ -3,7 +3,7 @@ import { WSBotChannelErrorEvent } from "../../bot/WSBotErrorEvent";
 import { BasicChannelListener } from "../../event/BasicChannelListener";
 import { CommandeUtils } from "../../util/CommandeUtil";
 import { EmbedUtil } from "../../util/EmbedUtil";
-import { ChameleonEmoji, EmojiUtils } from "../../util/EmojiUtils";
+import { ChameleonChannelEmoji, ChameleonEmoji, EmojiUtils } from "../../util/EmojiUtils";
 import { BasicCommande } from "../BasicCommande";
 
 export class Setup implements BasicCommande {
@@ -49,6 +49,8 @@ export class Setup implements BasicCommande {
                     }]
                 });
 
+                chameleonChannel.setTopic("Welcome in the chameleon zone, put " + ChameleonChannelEmoji.PAUSE + " to pause/resume a song, put " + ChameleonChannelEmoji.STOP +" to stop a song, put " + ChameleonChannelEmoji.SKIP + " to skip a song, put " + ChameleonChannelEmoji.LOOP + " to loop a song, put " + ChameleonChannelEmoji.SHUFFLE + " to shuffle the current song queue.");
+
                 if(!this.channelListener.linkToChannel(chameleonChannel))
                     client.emit(WSBotChannelErrorEvent.CHANNEL_LINKING,commande);
 
@@ -76,6 +78,6 @@ export class Setup implements BasicCommande {
             "The name of TheChameleonBot personnal channel."
         ];
 
-        return EmbedUtil.helpMessage("Setup",args,argsDesc,this.description);
+        return EmbedUtil.helpMessage("Setup",this.commandeName,args,argsDesc,this.description);
     }
 }

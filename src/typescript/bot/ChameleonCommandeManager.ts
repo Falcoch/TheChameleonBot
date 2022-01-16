@@ -12,6 +12,7 @@ import { Stop } from "../command/Stop";
 import { LoopSong } from "../command/LoopSong";
 import { LoopQueue } from "../command/LoopQueue";
 import { ConsoleUtils } from "../util/ConsoleUtils";
+import { Info } from "../command/Info";
 
 export class TheChameleonBotCommandeManager extends CommandeRegister {
 
@@ -33,5 +34,6 @@ export class TheChameleonBotCommandeManager extends CommandeRegister {
         this.addCommande(new Shuffle(true,false));
         this.addCommande(new LoopSong(true,false));
         this.addCommande(new LoopQueue(true,false));
+        this.addCommande(new Info(true,false));
     }
 }

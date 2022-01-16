@@ -2,6 +2,7 @@ import { Queue } from "discord-music-player";
 import { Client, Message, MessageEmbed } from "discord.js";
 import { WSBotErrorEvent } from "../bot/WSBotErrorEvent";
 import { EmbedUtil } from "../util/EmbedUtil";
+import { ChameleonEmoji } from "../util/EmojiUtils";
 import { BasicCommande } from "./BasicCommande";
 
 export class Shuffle implements BasicCommande {
@@ -31,22 +32,22 @@ export class Shuffle implements BasicCommande {
             try {
                 if(queue != null) {
                     queue.shuffle();
-                    !silent ?commande.channel.send({embeds: [EmbedUtil.normalMessage("Shuffle","Shuffle queue success !")]}) : "";
+                    commande.react(ChameleonEmoji.NICE);
                 } 
                 else {
                     !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Shuffle","There is nothing to shuffle !")]}) : "";
                 }
             } 
             catch(err2) {
-                client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,commande,err2);
+                client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,commande,err2,commande.channel);
             }
 
         } catch(err) {
-            client.emit(WSBotErrorEvent.UNKNOWN_ERROR,commande,err);
+            client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,commande,err,commande.channel);
         }  
     }
 
     public help(): MessageEmbed {
-        return EmbedUtil.helpMessage("Shuffle",null,null,this.description);
+        return EmbedUtil.helpMessage("Shuffle",this.commandeName,null,null,this.description);
     }
 }

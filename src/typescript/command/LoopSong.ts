@@ -44,15 +44,15 @@ export class LoopSong implements BasicCommande {
                 }
             } 
             catch(err2) {
-                client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,commande,err2);
+                client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,commande,err2,commande.channel);
             }
 
         } catch(err) {
-            client.emit(WSBotErrorEvent.UNKNOWN_ERROR,commande,err);
+            client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,commande,err,commande.channel);
         }  
     }
 
     public help(): MessageEmbed {
-        return EmbedUtil.helpMessage("Loop",null,null,this.description);
+        return EmbedUtil.helpMessage("Loop",this.commandeName,null,null,this.description);
     }
 }

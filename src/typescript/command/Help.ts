@@ -37,11 +37,13 @@ export class Help implements BasicCommande {
                     if(this.commandeRegister.getCommandeByName(args[1])[0].activated && !this.commandeRegister.getCommandeByName(args[1])[0].secret) {
                         commande.channel.send({ embeds: [this.commandeRegister.getCommandeByName(args[1])[0].help()]});
                     }
+                } else {
+                    client.emit(WSBotErrorEvent.UNKNOWN_COMMANDE,args[1],commande.channel);
                 }
             }
 
         } catch(err) {
-            client.emit(WSBotErrorEvent.UNKNOWN_ERROR,this.commandeName[0],err);
+            client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,this.commandeName[0],err,commande.channel);
             return null;
         }
     }
@@ -57,6 +59,6 @@ export class Help implements BasicCommande {
             "The commande that you need help."
         ];
 
-        return EmbedUtil.helpMessage("Help",args,argsDesc,this.description);
+        return EmbedUtil.helpMessage("Help",this.commandeName,args,argsDesc,this.description);
     }
 }

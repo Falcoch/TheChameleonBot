@@ -29,12 +29,17 @@ export class Play implements BasicCommande {
             const args : string[] = CommandeUtils.getArgument(commande.content);
 
             if(args[1] == null) {
-                client.emit(WSBotErrorEvent.BAD_ARGS_NUMBER);
+                client.emit(WSBotErrorEvent.BAD_ARGS_NUMBER,commande.channel);
                 return null;
             }
 
-            if(!voiceChannel.permissionsFor(commande.client.user).has("CONNECT") || !voiceChannel.permissionsFor(commande.client.user).has("SPEAK")) {
-                client.emit(WSBotErrorEvent.NOT_ENOUGHT_PERMISSION);
+            if(!voiceChannel.permissionsFor(commande.client.user).has("CONNECT")) {
+                client.emit(WSBotErrorEvent.NOT_ENOUGHT_PERMISSION,"CONNECT",commande.channel);
+                return null;
+            }
+
+            if(!voiceChannel.permissionsFor(commande.client.user).has("SPEAK"))  {
+                client.emit(WSBotErrorEvent.NOT_ENOUGHT_PERMISSION,"SPEAK",commande.channel);
                 return null;
             }
 
@@ -75,12 +80,12 @@ export class Play implements BasicCommande {
                     !silent ?commande.channel.send({embeds : [EmbedUtil.addSongToQueueMessage(commande.author.username,song)] }) : "";
                 } 
                 catch (err3) {
-                    client.emit(WSBotErrorEvent.CANNOT_LOAD_SONG,args[0],commande.content);
+                    client.emit(WSBotErrorEvent.CANNOT_LOAD_SONG,commande.content,err3,commande.channel);
                     return null;
                 }
             }
         } catch(err) {
-            client.emit(WSBotErrorEvent.UNKNOWN_ERROR);
+            client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,commande,err,commande.channel);
             return null;
         }
     }
@@ -96,6 +101,6 @@ export class Play implements BasicCommande {
             "What the bot gonna play."
         ];
 
-        return EmbedUtil.helpMessage("Play",args,argsDesc,this.description);
+        return EmbedUtil.helpMessage("Play",this.commandeName,args,argsDesc,this.description);
     }
 }

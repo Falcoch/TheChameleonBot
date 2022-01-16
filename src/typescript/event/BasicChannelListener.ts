@@ -36,7 +36,7 @@ export abstract class BasicChannelListener {
         this._messageCommande.set(PanelButtonKey.SHUFFLE_MODE,null);
         this._initPannelCommande();
         this._initChannelCommande();
-        this._doubleListen = true;
+        this._doubleListen = false;
     }
 
     protected abstract _initChannelCommande();
@@ -44,7 +44,8 @@ export abstract class BasicChannelListener {
     public abstract callCommande(message : Message) : boolean;
     protected abstract _initPannelCommande() : void;
     public abstract update() : void;
-    protected abstract _pannelMessage(song : Song) : void;
+    public abstract updatePannel() : void;
+    protected abstract _pannelMessage(song : Song) : Promise<void>;
 
     public getChannel() : TextChannel {
         return this._channel;

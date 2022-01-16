@@ -24,12 +24,12 @@ export class Credit implements BasicCommande {
             commande.channel.send({embeds : [EmbedUtil.credit()]});
 
         } catch(err) {
-            client.emit(WSBotErrorEvent.UNKNOWN_ERROR,this.commandeName[0],err);
+            client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,this.commandeName[0],err,commande.channel);
             return null;
         }
     }
 
     public help() : MessageEmbed {
-        return EmbedUtil.helpMessage("Credit",null,null,this.description);
+        return EmbedUtil.helpMessage("Credit",this.commandeName,null,null,this.description);
     }
 }

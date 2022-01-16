@@ -4,6 +4,7 @@ import { Client, Message, MessageEmbed } from "discord.js";
 import { WSBotErrorEvent } from "../bot/WSBotErrorEvent";
 import { EmbedUtil } from "../util/EmbedUtil";
 import { Queue } from "discord-music-player";
+import { ChameleonEmoji } from "../util/EmojiUtils";
 
 export class Skip implements BasicCommande {
 
@@ -34,8 +35,8 @@ export class Skip implements BasicCommande {
 
                     let nbSkip = 1;
                     Number(args[1]) > queue.songs.length ? nbSkip = queue.songs.length : nbSkip = Number(args[1]);
-                    !silent ?commande.channel.send({embeds : [EmbedUtil.normalMessage("Skip","Now skipping "+ args[1] +" songs !")]}) : "";
                     queue.skip(nbSkip);
+                    commande.react(ChameleonEmoji.NICE);
                 }
             }
             else {
@@ -43,7 +44,7 @@ export class Skip implements BasicCommande {
             }
 
         } catch(err) {
-            client.emit(WSBotErrorEvent.UNKNOWN_ERROR,this.commandeName[0],err);
+            client.emit(WSBotErrorEvent.COMMANDE_EXECUTE,this.commandeName[0],err,commande.channel);
             return null;
         }
 
@@ -60,6 +61,6 @@ export class Skip implements BasicCommande {
             "Num of song you gonna skip"
         ];
 
-        return EmbedUtil.helpMessage("Skip",args,argsDesc,this.description);
+        return EmbedUtil.helpMessage("Skip",this.commandeName,args,argsDesc,this.description);
     }
 }
