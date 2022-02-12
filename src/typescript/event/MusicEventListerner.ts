@@ -10,27 +10,33 @@ export abstract class MusicEventListener extends BasicEventListerner {
     protected _initEvent() : void {
         
         super._initEvent();
-        this.on(WSDiscordMusicEvent.SONG_ADD, (queue, song) => {
+        //@ts-ignore
+        this.player.on(WSDiscordMusicEvent.SONG_ADD, (queue, song) => {
             this._songAdd(queue,song);
         });
 
-        this.on(WSDiscordMusicEvent.SONG_CHANGED, (queue, newSong, oldSong) => {
+        //@ts-ignore
+        this.player.on(WSDiscordMusicEvent.SONG_CHANGED, (queue, newSong, oldSong) => {
             this._songChanged(queue,newSong,oldSong);
         });
 
-        this.on(WSDiscordMusicEvent.PLAYLIST_ADD, (queue, playlist) => {
+        //@ts-ignore
+        this.player.on(WSDiscordMusicEvent.PLAYLIST_ADD, (queue, playlist) => {
             this._playlistAdd(queue,playlist);
         });
 
-        this.on(WSDiscordMusicEvent.QUEUE_END, (queue) => {
+        //@ts-ignore
+        this.player.on(WSDiscordMusicEvent.QUEUE_END, (queue) => {
             this._queueEnd(queue);
         });
 
-        this.on(WSDiscordMusicEvent.QUEUE_DESTROYED, (queue) => {
+        //@ts-ignore
+        this.player.on(WSDiscordMusicEvent.QUEUE_DESTROYED, (queue) => {
             this._queueDestroyed(queue);
         });
 
-        this.on(WSDiscordMusicEvent.CHANNEL_EMPTY, (queue) => {
+        //@ts-ignore
+        this.player.on(WSDiscordMusicEvent.CHANNEL_EMPTY, (queue) => {
             this._channelEmpty(queue);
         });
     }

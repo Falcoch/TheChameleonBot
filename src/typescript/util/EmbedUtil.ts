@@ -31,7 +31,7 @@ export class EmbedUtil {
             .setColor(EmbedUtil._botColor)
             .setThumbnail(ImageUtil.getRandom())
             .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-            .setFooter("Requested by " + authorUsername)
+            .setFooter({"text" : "Requested by " + authorUsername})
             .setDescription( ChameleonEmoji.NICE + " Currently Playing :『" + song.name + "』");
             
         return message;
@@ -43,7 +43,7 @@ export class EmbedUtil {
             .setThumbnail(ImageUtil.getRandom())
             .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
             .setDescription("Add『" + song.name + "』to queue !")
-            .setFooter("Requested by " + authorUsername);
+            .setFooter({"text" : "Requested by " + authorUsername})
         return message;
     }
 
@@ -53,7 +53,7 @@ export class EmbedUtil {
             .setThumbnail(ImageUtil.getRandom())
             .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
             .setDescription("Currently Playing the Playlist :『" + playlist.name + "』!")
-            .setFooter("Requested by " + authorUsername);
+            .setFooter({"text" : "Requested by " + authorUsername})
         return message;
     }
 
@@ -63,7 +63,7 @@ export class EmbedUtil {
             .setThumbnail(ImageUtil.getRandom())
             .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
             .setDescription("Currently Playing the Playlist :『" + playlist.name + "』!")
-            .setFooter("Requested by " + authorUsername);
+            .setFooter({"text" : "Requested by " + authorUsername})
         return message;
     }
 
@@ -72,7 +72,7 @@ export class EmbedUtil {
             .setColor("#FF0000")
             .setTitle(":x: __Error__ :x:")
             .setThumbnail(ImageUtil.getError())
-            .setFooter("Please refer to the help.")
+            .setFooter({"text" : "The Chameleon Bot"})
             .setDescription(description)
             .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 
@@ -100,7 +100,7 @@ export class EmbedUtil {
             .setColor(EmbedUtil._botColor)
             .setTitle(":star: __Help__ : " + cmdName + " :star:")
             .setThumbnail(ImageUtil.getHelp())
-            .setFooter("The Chameleon Bot")
+            .setFooter({"text" : "The Chameleon Bot"})
             .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
             .setDescription(cmdDesc + "\n\nAlias : " + aliasDesc)
             .addFields({name : 'Usage', value : argsText});
@@ -133,7 +133,7 @@ export class EmbedUtil {
         .setColor(EmbedUtil._botColor)
         .setTitle(":star: __Commande List__ :star:")
         .setThumbnail(ImageUtil.getHelp())
-        .setFooter("The Chameleon Bot")
+        .setFooter({"text" : "The Chameleon Bot"})
         .setTimestamp()
         .setTimestamp()
         .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
@@ -156,7 +156,7 @@ export class EmbedUtil {
         const message = new MessageEmbed() 
         .setColor(EmbedUtil._botColor)
         .setThumbnail(ImageUtil.getRandom())
-        .setFooter("The Chameleon Bot")
+        .setFooter({"text" : "The Chameleon Bot"})
         .setTimestamp()
         .setDescription("Now playing 『" + newSong + "』!")
         .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
@@ -167,7 +167,7 @@ export class EmbedUtil {
         const message = new MessageEmbed() 
         .setColor(EmbedUtil._botColor)
         .setThumbnail(ImageUtil.getRandom())
-        .setFooter("The Chameleon Bot")
+        .setFooter({"text" : "The Chameleon Bot"})
         .setTimestamp()
         .setDescription("Channel empty !")
         .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
@@ -178,7 +178,7 @@ export class EmbedUtil {
         const message = new MessageEmbed() 
         .setColor(EmbedUtil._botColor)
         .setThumbnail(ImageUtil.getRandom())
-        .setFooter("The Chameleon Bot")
+        .setFooter({"text" : "The Chameleon Bot"})
         .setTimestamp()
         .setDescription("No more song to play !")
         .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
@@ -189,7 +189,7 @@ export class EmbedUtil {
         const message = new MessageEmbed()
         .setColor(EmbedUtil._botColor)
         .setTitle("__Queue__ - Page : " + page)
-        .setFooter("The Chameleon Bot")
+        .setFooter({"text" : "The Chameleon Bot"})
         .setTimestamp()
         .setDescription(desc)
         .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
@@ -203,7 +203,7 @@ export class EmbedUtil {
         .setDescription("**Dev.** : *Falcoch* ")
         .setTimestamp()
         .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-        .setFooter("The Chameleon Bot")
+        .setFooter({"text" : "The Chameleon Bot"})
         .setFields( {name : "**Version**", value : "*2.2*"},
                     {name : "**Description**", value : "*A simple Chameleon that play music* " + ChameleonEmoji.NICE})
         .setImage(PaintImage.BASIC);
@@ -237,7 +237,7 @@ export class EmbedUtil {
         .setDescription("Current song : \"" + song.name + "\".")
         .setTimestamp()
         .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-        .setFooter("The Chameleon Bot")
+        .setFooter({"text" : "The Chameleon Bot"})
         .setImage(song.thumbnail)
         .setFields( {name : "Author",value : song.author},
                     {name : "Duration",value : song.duration});

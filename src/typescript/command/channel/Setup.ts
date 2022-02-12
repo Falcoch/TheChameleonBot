@@ -53,8 +53,8 @@ export class Setup implements BasicCommande {
 
                 if(!this.channelListener.linkToChannel(chameleonChannel))
                     client.emit(WSBotChannelErrorEvent.CHANNEL_LINKING,commande);
-
-                this.channelListener.update();
+                
+                this.channelListener.update(commande.guild.id);
                 commande.react(EmojiUtils.getEmojiID(ChameleonEmoji.NICE));
 
             }

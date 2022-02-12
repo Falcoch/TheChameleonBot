@@ -63,14 +63,6 @@ export class TheChameleonBotEventListener extends MusicEventListener {
             this._errorChannelCreation(errorMessage);
         });
 
-        this.on(WSDiscordEvent.MESSAGE_CREATE,(message) => {
-            if(!message.author.bot) {
-                if(this._channelListener._channel != null || this._channelListener._doubleListen == true)
-                    if(message.channel == this._channelListener._channel)
-                        this._channelCommande(message);
-            }
-        });
-
         this.on(WSBotErrorEvent.EMIT_ERROR, (commandeName,errorEvent,newError,baseError) => {
             this._errorEmitError(commandeName,errorEvent,newError,baseError);
         }); 
@@ -81,11 +73,28 @@ export class TheChameleonBotEventListener extends MusicEventListener {
     }
 
     public _commande(commande: Message): void {
-        try {
-            if(this._channelListener.getChannel() == null || this._channelListener._doubleListen == true) {
-                if(!this._commandeManager.callCommande(this,commande))
-                    this.emit(WSBotErrorEvent.UNKNOWN_COMMANDE,commande.content.split(' ')[0],commande.channel); 
+        if(!this._channelListener._doubleListen) {
+            if(this._channelListener.haveSetupChannel(commande.guild.id)) { 
+                this._channelCommande(commande);
+            } 
+            else { 
+                if(commande.content[0] == this._commandeIdentifier) {
+                    let newCommande : Message = Object.create(commande);
+                    newCommande.content = commande.content.split(this._commandeIdentifier)[1];
+                    this._textCommande(newCommande);
+                }
             }
+        }
+        else {
+            this._textCommande(commande);
+            this._channelCommande(commande);
+        }
+    }
+
+    public _textCommande(commande : Message) {
+        try {
+            if(!this._commandeManager.callCommande(this,commande))
+                this.emit(WSBotErrorEvent.UNKNOWN_COMMANDE,commande.content.split(' ')[0],commande.channel); 
         }
         catch(err) {
             this.emit(WSBotErrorEvent.UNKNOWN_ERROR,commande.content.split(' ')[0],err,commande.channel);
@@ -93,21 +102,23 @@ export class TheChameleonBotEventListener extends MusicEventListener {
     }
 
     public _channelCommande(message : Message) {
-        if(this._channelListener.getChannel() != null || this._channelListener._doubleListen == true) {
-            try {
-                if(!this._channelListener.callCommande(message))
-                    this.emit(WSBotChannelErrorEvent.CHANNEL_UNKNOWN_COMMANDE,message.content);
-            }
-            catch(err) {
-                this.emit(WSBotChannelErrorEvent.CHANNEL_UNKNOWN_COMMANDE,message.content,err);
+        if(this._channelListener.getChannel(message.guild.id) != null) {
+            if(message.channel.id == this._channelListener.getChannel(message.guild.id).id) {
+                try {
+                    if(!this._channelListener.callCommande(message))
+                        this.emit(WSBotChannelErrorEvent.CHANNEL_UNKNOWN_COMMANDE,message.content);
+                }
+                catch(err) {
+                    this.emit(WSBotChannelErrorEvent.CHANNEL_UNKNOWN_COMMANDE,message.content,err);
+                }
             }
         }
     }
 
-    protected _channelDelete(channel: Channel) {
+    protected _channelDelete(channel: TextChannel) {
         try {
-            if(channel == this._channelListener.getChannel()) {
-                this._channelListener.unLinkToChannel();
+            if(channel == this._channelListener.getChannel(channel.guild.id)) {
+                this._channelListener.unLinkToChannel(channel.guild.id);
             }
         } catch(err) {
             this.emit(WSBotChannelErrorEvent.CHANNEL_UNLINK);
@@ -135,29 +146,28 @@ export class TheChameleonBotEventListener extends MusicEventListener {
     }
 
     protected _songAdd(queue: any, song: any): void {
-        
+        this._updateChannelListener(queue.guild.id);
     }
 
     protected _songChanged(queue: any, newSong: any, oldSong: any): void {
-        
+        this._updateChannelListener(queue.guild.id);
     }
 
     protected _playlistAdd(queue: any, playlist: any): void {
-        
+        this._updateChannelListener(queue.guild.id);
     }
 
-    protected _queueEnd(queue: any): void {
-        
+    protected _queueEnd(queue: Queue): void {
+        this._updateChannelListener(queue.guild.id);
     }
 
     protected _queueDestroyed(queue: any): void {
-        
+        this._updateChannelListener(queue.guild.id);
     }
 
     protected _channelEmpty(queue: Queue): void {
-        for(let i = 0; i < queue.songs.length; i++) {
-            queue.skip();
-        }
+        queue.clearQueue();
+        this._updateChannelListener(queue.guild.id);
     }
 
     protected _errorCommandeExecution(commandeName : string,errorMessage : string,commandeChannel : TextChannel) {
@@ -254,5 +264,9 @@ export class TheChameleonBotEventListener extends MusicEventListener {
         ConsoleUtils.logError("Emiting Error : \"" + commandeName + "\" \n Event : " + errorEvent + "\n New Error : " + newError + "\n Basic Error : " + basicError);
     }
 
+    private _updateChannelListener(guildID : string) {
+        if(this._channelListener._channel.get(guildID) != null)
+            this._channelListener.update(guildID);
+    }
 
 }

@@ -34,11 +34,8 @@ export abstract class BasicEventListerner extends Client  {
         });
 
         this.on(WSDiscordEvent.MESSAGE_CREATE, async (message : Message) => {
-            if(!message.author.bot && message.content[0] == this._commandeIdentifier && message.content.length > 1)
-            {
-                let newMessage : Message = Object.create(message);
-                newMessage.content = message.content.split(this._commandeIdentifier)[1];
-                this._commande(newMessage);
+            if(!message.author.bot && message.content.length > 1) {
+                this._commande(message);
             }
         });
 

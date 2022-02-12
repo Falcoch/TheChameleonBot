@@ -17,7 +17,7 @@ export abstract class BasicChannelListener {
     _commandeManager : CommandeRegister;
     _client : Client;
 
-    _channel : TextChannel;
+    _channel : Map<string,TextChannel>;
     _messageCommande : Map<string,BasicCommande>;
 
     _commandeIdentifier : string;
@@ -29,6 +29,7 @@ export abstract class BasicChannelListener {
         this._commandeManager = commandeManager;
         this._commandeIdentifier = commandeIdentifier;
         this._messageCommande = new Map<string,BasicCommande>();
+        this._channel = new Map<string,TextChannel>();
         this._messageCommande.set(PanelButtonKey.PAUSE,null);
         this._messageCommande.set(PanelButtonKey.STOP,null);
         this._messageCommande.set(PanelButtonKey.SKIP,null);
@@ -43,17 +44,17 @@ export abstract class BasicChannelListener {
 
     public abstract callCommande(message : Message) : boolean;
     protected abstract _initPannelCommande() : void;
-    public abstract update() : void;
-    public abstract updatePannel() : void;
-    protected abstract _pannelMessage(song : Song) : Promise<void>;
+    public abstract update(guildID : string) : void;
+    public abstract updatePannel(guildID : string) : void;
+    protected abstract _pannelMessage(guildID : string) : Promise<void>;
 
-    public getChannel() : TextChannel {
-        return this._channel;
+    public getChannel(guildID : string) : TextChannel {
+        return this._channel.get(guildID);
     }
 
     public linkToChannel(channels : TextChannel) : boolean {
         try {
-            this._channel = channels;    
+            this._channel.set(channels.guild.id,channels);    
         } 
         catch(err) {
             this._client.emit(WSBotChannelErrorEvent.CHANNEL_LINKING,err);
@@ -63,9 +64,9 @@ export abstract class BasicChannelListener {
         return true
     }
 
-    public unLinkToChannel() : boolean {
+    public unLinkToChannel(guildID : string) : boolean {
         try {
-            this._channel = null
+            this._channel.delete(guildID);
         } catch(err) {
             this._client.emit(WSBotChannelErrorEvent.CHANNEL_UNLINK,err);
             return false;
