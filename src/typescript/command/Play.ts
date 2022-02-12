@@ -49,7 +49,7 @@ export class Play implements BasicCommande {
             let song : Song | Playlist = null;
             
             try {
-                if(ytdl.validateURL(args[1])) {
+                if(ytdl.validateURL(args[1]) || (args[1].startsWith('http') && !args[1].startsWith('https://www.youtube.com/playlist'))) {
                     song = await queue.play(args[1].split('&')[0]);
                     queue.songs.length >= 1 
                     ? 
