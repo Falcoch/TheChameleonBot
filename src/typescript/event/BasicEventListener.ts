@@ -4,7 +4,7 @@
  * call a eventManager 
  */
 
-import {Channel, Client, Intents,Message} from "discord.js"
+import {Channel, Client, Guild, Intents,Message} from "discord.js"
 import {WSDiscordEvent} from "../discord/WSDiscordEvent"
 import { Player } from "discord-music-player"; 
 import { CommandeRegister } from "../command/register/CommandeRegister";
@@ -47,6 +47,14 @@ export abstract class BasicEventListerner extends Client  {
             this._warn(message);
         });
 
+        this.on(WSDiscordEvent.DISCONNECT, (event) => {
+            this._disconnect(event);
+        });
+
+        this.on(WSDiscordEvent.GUILD_DELETE_QUIT,(guild : Guild) => {
+            this._guildDeleteOrQuit(guild);
+        })
+
         this.on(WSDiscordEvent.CHANNEL_DELETE, (channel : Channel) => {
             this._channelDelete(channel);
         });
@@ -58,7 +66,6 @@ export abstract class BasicEventListerner extends Client  {
         this.on(WSDiscordEvent.CHANNEL_UPDATE, (channel) => {
             this._channelUpdate(channel);
         });
-
     }
 
     public getCommandeIdentifier() : string  {
@@ -73,11 +80,16 @@ export abstract class BasicEventListerner extends Client  {
     protected abstract _quit() : void;
     protected abstract _error(error : Error) : void; 
     protected abstract _commande(commande : Message) : void;
-    protected abstract _warn(message : string); 
+
+    protected abstract _guildDeleteOrQuit(guild: Guild) : void;
+
+    protected abstract _warn(message : string) : void; 
+    protected abstract _disconnect(event) : void;
 
     protected abstract _channelDelete(channel : Channel);
     protected abstract _channelCreate(channel : Channel);
     protected abstract _channelUpdate(channel : Channel);
+    
     
 }
 

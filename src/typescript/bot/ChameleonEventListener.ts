@@ -3,7 +3,7 @@ import { WSBotChannelErrorEvent, WSBotErrorEvent } from "./WSBotErrorEvent";
 import { ConsoleUtils } from "../util/ConsoleUtils";
 import { Queue } from "discord-music-player";
 import { ChameleonChannelListener } from "./ChameleonChannelListener";
-import { Channel, Message, TextChannel } from "discord.js";
+import { Channel, Guild, Message, TextChannel } from "discord.js";
 import { CommandeRegister } from "../command/register/CommandeRegister";
 import { WSDiscordEvent } from "../discord/WSDiscordEvent";
 import { EmbedUtil } from "../util/EmbedUtil";
@@ -65,11 +65,13 @@ export class TheChameleonBotEventListener extends MusicEventListener {
 
         this.on(WSBotErrorEvent.EMIT_ERROR, (commandeName,errorEvent,newError,baseError) => {
             this._errorEmitError(commandeName,errorEvent,newError,baseError);
-        }); 
+        });
+
     }
 
     protected _ready(): void {
         ConsoleUtils.logSuccess("Start-up complete !")
+        this._channelListener.readSave();
     }
 
     public _commande(commande: Message): void {
@@ -143,6 +145,14 @@ export class TheChameleonBotEventListener extends MusicEventListener {
 
     protected _warn(message : string) : void {
 
+    }
+
+    protected _guildDeleteOrQuit(guild: Guild): void {
+        this._channelListener.erase(guild.id);
+    }
+
+    protected _disconnect(event: any) {
+        
     }
 
     protected _songAdd(queue: any, song: any): void {

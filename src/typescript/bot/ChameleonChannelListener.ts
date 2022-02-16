@@ -1,5 +1,5 @@
 import { Queue, Song } from "discord-music-player";
-import { Channel, Client, Guild, Message, TextChannel } from "discord.js";
+import { Client, Message, TextChannel } from "discord.js";
 import { Setup } from "../command/channel/Setup";
 import { CommandeRegister } from "../command/register/CommandeRegister";
 import { BasicChannelListener, PanelButtonKey } from "../event/BasicChannelListener";
@@ -7,7 +7,9 @@ import { ConsoleUtils } from "../util/ConsoleUtils";
 import { EmbedUtil } from "../util/EmbedUtil";
 import { ChameleonChannelEmoji, EmojiUtils } from "../util/EmojiUtils";
 import { WSBotChannelErrorEvent } from "./WSBotErrorEvent";
-
+import { FileOutputUtil } from "../util/FileOutputUtils";
+import  dotenv from 'dotenv'
+ 
 export class ChameleonChannelListener extends BasicChannelListener {
 
     private _queue : Map<string,Message<boolean>>;
@@ -21,10 +23,9 @@ export class ChameleonChannelListener extends BasicChannelListener {
     }
 
     public haveSetupChannel(guidID : string) {
-        if(this._channel.get(guidID) != null)
-            return true;
-        else
-            return false;
+        let result : Boolean = false;
+        this._channel.get(guidID) != null ?  result = true : "";
+        return result;
     }
 
     public callCommande(message: Message<boolean>): boolean {
@@ -168,19 +169,44 @@ export class ChameleonChannelListener extends BasicChannelListener {
 
         while (i <= 8) {
             if(queue.isPlaying) {
-                await this.delay(1000);
+                await this.delay(600);
                 this._pannel.get(guildID).edit({ embeds : [EmbedUtil.channelMessage(queue.nowPlaying)]});
                 break;
             }
             else {
                 this._pannel.get(guildID).edit({embeds : [EmbedUtil.channelMessage(null)]});
             }
-            await this.delay(1000);
+            await this.delay(600);
             i++;
         }
     }
 
     private delay(ms: number) {
         return new Promise( resolve => setTimeout(resolve, ms) );
+    }
+
+    public save() {
+        dotenv.config();
+        this._channel.forEach((value : TextChannel, key : String) => {
+            FileOutputUtil.save(process.env.DATA_PATH,value.guild.name,value.guild.id,value.id);
+        });
+    }
+
+    public erase(serverID : string) {
+        dotenv.config();
+        FileOutputUtil.erase(process.env.DATA_PATH,serverID);
+    }
+
+    public readSave() {
+        dotenv.config();
+        const data = FileOutputUtil.getAll(process.env.DATA_PATH);
+        if(data != undefined) {
+            data.forEach(async guild => {
+                let textChannel : TextChannel =  (this._client.channels.cache.get(guild.ChannelId) as TextChannel);
+                this._channel.set(guild.Id, textChannel);
+                textChannel.bulkDelete(25);
+                this.update(textChannel.guild.id);
+            });
+        }
     }
 }

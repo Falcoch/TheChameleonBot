@@ -1,4 +1,5 @@
 import { Client, Message, MessageEmbed, Permissions, TextChannel } from "discord.js";
+import { ChameleonChannelListener } from "../../bot/ChameleonChannelListener";
 import { WSBotChannelErrorEvent } from "../../bot/WSBotErrorEvent";
 import { BasicChannelListener } from "../../event/BasicChannelListener";
 import { CommandeUtils } from "../../util/CommandeUtil";
@@ -57,6 +58,9 @@ export class Setup implements BasicCommande {
                 this.channelListener.update(commande.guild.id);
                 commande.react(EmojiUtils.getEmojiID(ChameleonEmoji.NICE));
 
+                //!-----
+                (this.channelListener as ChameleonChannelListener).save();
+                //!----
             }
             catch(err2) {
                 client.emit(WSBotChannelErrorEvent.CHANNEL_CREATION,err2);
